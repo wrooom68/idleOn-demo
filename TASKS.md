@@ -480,10 +480,11 @@ Checklist:
 
 ## Review Gate C
 
-Status: TODO
+Status: WAITING_FOR_USER_REVIEW
 ID: C
 After tasks: 31, 32, 33, 34
 Approval phrase: REVIEW DONE C
+Block phrase: REVIEW BLOCKED C: <short reason>
 Next batch promoted on approval: Tasks 35-40
 Review type: Unity manual validation required for AFK and second character behavior.
 
