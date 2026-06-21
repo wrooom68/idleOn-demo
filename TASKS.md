@@ -71,7 +71,7 @@ Notes: Completed but needs user/manual Unity review. Do not repeat unless the us
 
 ## Task 08
 
-Status: READY
+Status: DONE
 Title: Core data definitions and runtime state
 
 Allowed files:
@@ -108,103 +108,103 @@ Acceptance:
 
 ## Task 09
 
-Status: TODO
+Status: DONE
 Title: Seed initial data assets
 Commit: Seed initial data assets
 
 ## Task 10
 
-Status: TODO
+Status: DONE
 Title: Save serialization service
 Commit: Add save serialization service
 
 ## Task 11
 
-Status: TODO
+Status: DONE
 Title: Inventory domain logic
 Commit: Add inventory domain logic
 
 ## Task 12
 
-Status: TODO
+Status: DONE
 Title: Character progression domain logic
 Commit: Add character progression domain logic
 
 ## Task 13
 
-Status: TODO
+Status: DONE
 Title: Gathering domain logic
 Commit: Add gathering domain logic
 
 ## Task 14
 
-Status: TODO
+Status: DONE
 Title: Combat domain logic
 Commit: Add combat domain logic
 
 ## Task 15
 
-Status: TODO
+Status: DONE
 Title: Crafting domain logic
 Commit: Add crafting domain logic
 
 ## Task 16
 
-Status: TODO
+Status: DONE
 Title: Quest domain logic
 Commit: Add quest domain logic
 
 ## Task 17
 
-Status: TODO
+Status: DONE
 Title: Talent domain logic
 Commit: Add talent domain logic
 
 ## Task 18
 
-Status: TODO
+Status: DONE
 Title: Offline progress calculation
 Commit: Add offline progress calculation
 
 ## Task 19
 
-Status: TODO
+Status: DONE
 Title: Core service registry
 Commit: Add core service registry
 
 ## Task 20
 
-Status: TODO
+Status: DONE
 Title: Bootstrap flow
 Commit: Add bootstrap flow
 
 ## Task 21
 
-Status: TODO
+Status: REVIEW
 Title: Main scene wiring plan
 Commit: Add main scene wiring plan
 
 ## Task 22
 
-Status: TODO
+Status: REVIEW
 Title: Player profile initialization
 Commit: Add player profile initialization
 
 ## Task 23
 
-Status: TODO
+Status: REVIEW
 Title: Runtime event definitions
 Commit: Add runtime event definitions
 
 ## Task 24
 
-Status: TODO
+Status: REVIEW
 Title: Gameplay controller shell
 Commit: Add gameplay controller shell
 
 ## Task 25
 
-Status: TODO
+Status: READY
 Title: Town activity loop
 Commit: Add town activity loop
 
