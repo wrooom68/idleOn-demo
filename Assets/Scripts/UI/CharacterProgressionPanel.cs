@@ -24,6 +24,8 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Button miningSpeedTalentButton;
         [SerializeField] private Button xpGainTalentButton;
         [SerializeField] private Button afkGainTalentButton;
+        [SerializeField] private ClassChoicePanel classChoicePanel;
+        [SerializeField] private TalentPanel talentPanel;
         [SerializeField] private ToastView toastView;
         [SerializeField] private TownHUDView townHudView;
         [SerializeField] private QuestDefinition[] questDefinitions;
@@ -146,6 +148,8 @@ namespace IdleGuildDemo.UI
             CharacterStats stats = services.StatsSystem.CalculateStats(character);
             SetText(summaryText, FormatSummary(services, character));
             SetText(statsText, FormatStats(stats));
+            classChoicePanel?.Bind(character, new ClassSelectionSystem());
+            talentPanel?.Bind(character, new TalentSystem());
             RefreshButtons(services, character);
         }
 

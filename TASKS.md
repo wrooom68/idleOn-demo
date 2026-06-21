@@ -359,7 +359,7 @@ Commit: Add crafting UI binding
 
 ## Task 38
 
-Status: READY
+Status: DONE
 Title: Character UI binding
 Commit: Add character UI binding
 

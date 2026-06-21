@@ -14,6 +14,11 @@ namespace IdleGuildDemo.UI
     [SerializeField] private Text classText;
     [SerializeField] private Text talentPointsText;
 
+    public void Clear()
+    {
+      SetCharacter(null, string.Empty, 1, 0, 1, string.Empty, string.Empty, 0);
+    }
+
     public void SetCharacter(
       Sprite portrait,
       string characterName,
