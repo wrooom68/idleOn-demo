@@ -407,7 +407,7 @@ Commit: Tune demo pacing
 
 ## Task 46
 
-Status: READY
+Status: DONE
 Title: Manual QA checklist
 Commit: Add manual QA checklist
 
