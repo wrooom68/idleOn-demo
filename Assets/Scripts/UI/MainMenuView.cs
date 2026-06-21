@@ -77,15 +77,14 @@ namespace IdleGuildDemo.UI
         public void ContinueGame()
         {
             SaveSystem saveSystem = GetSaveSystem();
-            if (!saveSystem.SaveExists())
+            if (!saveSystem.TryLoadExisting(out SaveData saveData))
             {
-                SetStatus("No save found. Choose New Game to start the reviewer path.");
+                SetStatus("No valid save found. Choose New Game to start the reviewer path.");
                 RefreshMenuState();
                 return;
             }
 
             SetStatus("Continuing saved demo progress...");
-            SaveData saveData = saveSystem.LoadOrCreate();
             saveData.Normalize();
             RegisterRuntime(saveSystem, saveData);
             LoadTownScene();
@@ -123,12 +122,12 @@ namespace IdleGuildDemo.UI
 
         public void RefreshMenuState()
         {
-            bool hasSave = GetSaveSystem().SaveExists();
+            bool hasSave = GetSaveSystem().TryLoadExisting(out SaveData saveData);
             SetContinueAvailable(hasSave);
 
             if (string.IsNullOrEmpty(GetStatus()))
             {
-                SetStatus(hasSave ? "Save found. Continue or start fresh." : "No save found. Start a new demo run.");
+                SetStatus(hasSave ? GetSaveFoundStatus(saveData) : "No save found. Start a new demo run.");
             }
         }
 
@@ -165,6 +164,16 @@ namespace IdleGuildDemo.UI
             {
                 text.text = label;
             }
+        }
+
+        private static string GetSaveFoundStatus(SaveData saveData)
+        {
+            if (saveData == null || string.IsNullOrEmpty(saveData.lastSavedUtc))
+            {
+                return "Save found. Continue or start fresh.";
+            }
+
+            return $"Save found. Last saved {saveData.lastSavedUtc}.";
         }
 
         private static SaveSystem GetSaveSystem()

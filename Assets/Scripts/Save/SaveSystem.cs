@@ -48,6 +48,31 @@ namespace IdleGuildDemo.Save
             return CurrentSave;
         }
 
+        public bool TryLoadExisting(out SaveData saveData)
+        {
+            saveData = null;
+            var path = GetSavePath();
+            if (!File.Exists(path))
+            {
+                Debug.Log($"No save found at {path}");
+                return false;
+            }
+
+            var json = File.ReadAllText(path);
+            var loaded = serializer.FromJson(json);
+            if (loaded == null)
+            {
+                Debug.LogWarning($"Save file at {path} could not be loaded.");
+                return false;
+            }
+
+            loaded.Normalize();
+            CurrentSave = loaded;
+            saveData = loaded;
+            Debug.Log($"Loaded existing save from {path}");
+            return true;
+        }
+
         public void Save()
         {
             Save(CurrentSave ?? SaveData.CreateNew());
