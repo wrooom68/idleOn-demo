@@ -335,7 +335,7 @@ Commit: Add second character task behavior
 
 ## Task 34
 
-Status: READY
+Status: DONE
 Title: AFK results modal integration
 Commit: Add AFK results modal integration
 

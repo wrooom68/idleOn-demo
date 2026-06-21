@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using IdleGuildDemo.Core;
 using IdleGuildDemo.Runtime;
@@ -30,6 +31,11 @@ namespace IdleGuildDemo.UI
             {
                 closeButton.onClick.AddListener(Hide);
             }
+
+            if (simulateTwoHoursButton != null)
+            {
+                simulateTwoHoursButton.onClick.AddListener(OnSimulateTwoHoursClicked);
+            }
         }
 
         private void OnDisable()
@@ -42,6 +48,11 @@ namespace IdleGuildDemo.UI
             if (closeButton != null)
             {
                 closeButton.onClick.RemoveListener(Hide);
+            }
+
+            if (simulateTwoHoursButton != null)
+            {
+                simulateTwoHoursButton.onClick.RemoveListener(OnSimulateTwoHoursClicked);
             }
         }
 
@@ -96,6 +107,30 @@ namespace IdleGuildDemo.UI
             SetText(resultsText, builder.ToString().TrimEnd());
         }
 
+        public AfkRewardSummary SimulateTwoHoursAfk()
+        {
+            if (!TryGetServices(out ServiceRegistry services))
+            {
+                SetResults("Runtime is not ready.");
+                Show();
+                return null;
+            }
+
+            AfkRewardSummary summary = services.OfflineProgressionSystem.SimulateAndApplyRewards(
+                services.PlayerProfile,
+                TimeSpan.FromHours(GameConstants.OfflineDemoSimulatedHours));
+
+            services.SaveSystem.Save(services.SaveData);
+            SetResults(summary);
+            Show();
+            return summary;
+        }
+
+        private void OnSimulateTwoHoursClicked()
+        {
+            SimulateTwoHoursAfk();
+        }
+
         private void SetVisible(bool visible)
         {
             if (root != null)
@@ -123,6 +158,10 @@ namespace IdleGuildDemo.UI
 
             builder.AppendLine($"{reward.characterName} - {FormatTask(reward.taskType, reward.targetId)}");
             builder.AppendLine($"XP +{reward.xpGained}  Coins +{reward.coinsGained}");
+            if (reward.leveledUp)
+            {
+                builder.AppendLine($"Level {reward.levelBefore} -> {reward.levelAfter}");
+            }
 
             if (reward.itemsGained != null && reward.itemsGained.Count > 0)
             {
@@ -183,6 +222,18 @@ namespace IdleGuildDemo.UI
             {
                 text.text = value ?? string.Empty;
             }
+        }
+
+        private static bool TryGetServices(out ServiceRegistry services)
+        {
+            GameBootstrap.EnsureInitialized();
+            services = ServiceRegistry.Instance;
+            if (!services.IsInitialized)
+            {
+                Debug.LogError("ServiceRegistry is not initialized. Add GameBootstrap to the scene.");
+            }
+
+            return services.IsInitialized;
         }
     }
 }

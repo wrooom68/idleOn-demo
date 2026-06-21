@@ -34,6 +34,7 @@ namespace IdleGuildDemo.UI
         [SerializeField] private InventoryCraftingPanel inventoryCraftingPanel;
         [SerializeField] private CharacterProgressionPanel characterProgressionPanel;
         [SerializeField] private AfkResultsModal afkResultsModal;
+        [SerializeField] private LootLogView lootLogView;
         [SerializeField] private ToastView toastView;
         [SerializeField] private QuestDefinition[] questDefinitions;
 
@@ -187,6 +188,7 @@ namespace IdleGuildDemo.UI
                 afkResultsModal.Show();
             }
 
+            lootLogView?.AddAfkRewards(summary);
             SetStatus("AFK rewards applied.");
             Refresh();
         }
