@@ -17,8 +17,16 @@ Rules:
 - Commit each task separately with the listed commit message.
 - When a review gate is reached, create reports/review_gate_<id>.md, mark the gate WAITING_FOR_USER_REVIEW, list the exact review checklist, commit, print the required in-session review message, and stop.
 - Continue only when the user replies REVIEW DONE <id>.
-- If the user replies REVIEW DONE <id>, mark the gate APPROVED in TASKS.md, create or update reports/review_gate_<id>_approval.md, commit with "Approve review gate <id>", and continue from the next READY task.
+- If the latest user message is REVIEW DONE <id>, approve the gate, promote the linked next batch, commit, then continue execution.
+- If the user replies REVIEW DONE <id>, mark the gate APPROVED in TASKS.md, create or update reports/review_gate_<id>_approval.md, promote the linked next batch to READY, commit with "Approve review gate <id>", and continue from the promoted READY tasks.
 - If the user replies REVIEW BLOCKED <id>: <short reason>, mark the gate BLOCKED in TASKS.md, create or update reports/review_gate_<id>_blocked.md, record the reason, commit with "Block review gate <id>", and stop.
+
+Gate-to-next-batch promotion:
+- Gate A approval promotes Tasks 29-30 to READY.
+- Gate B approval promotes Tasks 31-34 to READY.
+- Gate C approval promotes Tasks 35-40 to READY.
+- Gate D approval promotes Tasks 41-50 to READY.
+- Gate E approval promotes no tasks because it is the final submission review.
 
 Required review gate message format:
 

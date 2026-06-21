@@ -23,8 +23,16 @@ Rules:
 - Codex may run Unity validation only when the current task or review gate explicitly allows it. If Unity licensing, Hub, batchmode, or validation fails, stop and mark the current task or gate `BLOCKED`. Do not run final builds unless the task is specifically a build task.
 - When a review gate is reached, create `reports/review_gate_<id>.md`, mark the gate `WAITING_FOR_USER_REVIEW`, commit, print the required in-session review message, and stop.
 - Continue after a review gate only when the user replies `REVIEW DONE <gate_id>`.
-- If the user replies `REVIEW DONE <gate_id>`, mark the gate `APPROVED`, create or update `reports/review_gate_<gate_id>_approval.md`, commit with `Approve review gate <gate_id>`, and continue from the next `READY` task.
+- If the user replies `REVIEW DONE <gate_id>`, mark the gate `APPROVED`, create or update `reports/review_gate_<gate_id>_approval.md`, promote the linked next batch to `READY`, commit with `Approve review gate <gate_id>`, and continue from the promoted `READY` tasks.
 - If the user replies `REVIEW BLOCKED <gate_id>: <short reason>`, mark the gate `BLOCKED`, create or update `reports/review_gate_<gate_id>_blocked.md`, record the reason, commit with `Block review gate <gate_id>`, and stop.
+
+Gate-to-next-batch promotion:
+
+- Gate A approval promotes Task 29 and Task 30 to `READY`.
+- Gate B approval promotes Task 31, Task 32, Task 33, and Task 34 to `READY`.
+- Gate C approval promotes Task 35, Task 36, Task 37, Task 38, Task 39, and Task 40 to `READY`.
+- Gate D approval promotes Task 41, Task 42, Task 43, Task 44, Task 45, Task 46, Task 47, Task 48, Task 49, and Task 50 to `READY`.
+- Gate E approval promotes no tasks. Gate E is the final submission review.
 
 ## Task 01
 
@@ -297,13 +305,13 @@ Commit: Implement talent system
 
 ## Task 29
 
-Status: TODO
+Status: READY
 Title: Class and talent UI integration
 Commit: Add class and talent UI integration
 
 ## Task 30
 
-Status: TODO
+Status: READY
 Title: Economy and reward feedback
 Commit: Add economy and reward feedback
 
@@ -434,6 +442,7 @@ ID: A
 After tasks: 25, 26, 27, 28
 Approval phrase: REVIEW DONE A
 Block phrase: REVIEW BLOCKED A: <short reason>
+Next batch promoted on approval: Tasks 29-30
 Review type: Code/system review.
 Open Unity: Yes, recommended.
 
@@ -457,6 +466,7 @@ Status: TODO
 ID: B
 After tasks: 29, 30
 Approval phrase: REVIEW DONE B
+Next batch promoted on approval: Tasks 31-34
 Review type: Unity visual/manual review required.
 
 Checklist:
@@ -473,6 +483,7 @@ Status: TODO
 ID: C
 After tasks: 31, 32, 33, 34
 Approval phrase: REVIEW DONE C
+Next batch promoted on approval: Tasks 35-40
 Review type: Unity manual validation required for AFK and second character behavior.
 
 Checklist:
@@ -490,6 +501,7 @@ Status: TODO
 ID: D
 After tasks: 35, 36, 37, 38, 39, 40
 Approval phrase: REVIEW DONE D
+Next batch promoted on approval: Tasks 41-50
 Review type: Unity visual review required.
 
 Checklist:
@@ -506,6 +518,8 @@ Status: TODO
 ID: E
 After tasks: 41, 42, 43, 44, 45, 46, 47, 48, 49, 50
 Approval phrase: REVIEW DONE E
+Next batch promoted on approval: none
+This is final submission review.
 Review type: Final QA, playtest, build, video, and submission review.
 
 Checklist:

@@ -62,7 +62,17 @@ For example:
 REVIEW DONE A
 ```
 
-When the user replies `REVIEW DONE <gate_id>`, Codex marks the gate `APPROVED` in `TASKS.md`, creates or updates `reports/review_gate_<gate_id>_approval.md`, commits with `Approve review gate <gate_id>`, and resumes from the next `READY` task.
+When the user replies `REVIEW DONE <gate_id>`, Codex marks the gate `APPROVED` in `TASKS.md`, creates or updates `reports/review_gate_<gate_id>_approval.md`, promotes the linked next batch from `TODO` to `READY`, commits the approval and promotion with `Approve review gate <gate_id>`, and immediately resumes from the promoted `READY` tasks.
+
+No separate manual batch preparation is needed after approval. The approval phrase is the user's permission for Codex to prepare and execute the next linked batch.
+
+Gate-to-next-batch promotion:
+
+- Gate A approval promotes Tasks 29-30 to `READY`.
+- Gate B approval promotes Tasks 31-34 to `READY`.
+- Gate C approval promotes Tasks 35-40 to `READY`.
+- Gate D approval promotes Tasks 41-50 to `READY`.
+- Gate E approval promotes no tasks because it is the final submission review.
 
 If there is a problem, the user replies:
 
@@ -109,5 +119,6 @@ Rules:
 - Update TASKS.md status.
 - Commit each task separately with the listed commit message.
 - When a review gate is reached, create reports/review_gate_<id>.md, mark the gate WAITING_FOR_USER_REVIEW, list exact review checklist, commit, print the required in-session review message, and stop.
+- If the latest user message is REVIEW DONE <id>, approve the gate, promote the linked next batch, commit, then continue execution.
 - Continue only when the user replies REVIEW DONE <id>.
 ```

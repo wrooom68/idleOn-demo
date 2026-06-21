@@ -71,7 +71,8 @@ Codex must not continue until one of those replies is received.
 
 ## Review Gate Resume Rules
 
-- When the user replies `REVIEW DONE <gate_id>`, mark the review gate `APPROVED` in `TASKS.md`, create or update `reports/review_gate_<gate_id>_approval.md`, commit with `Approve review gate <gate_id>`, then continue autonomous batch-runner from the next `READY` task.
+- When the user replies `REVIEW DONE <gate_id>`, mark the review gate `APPROVED` in `TASKS.md`, create or update `reports/review_gate_<gate_id>_approval.md`, promote the linked next batch to `READY`, commit with `Approve review gate <gate_id>`, then continue autonomous batch-runner from the promoted `READY` tasks.
+- Approval of a review gate must automatically promote the linked next batch to `READY` and resume execution. The user should not need a separate prompt to prepare the next batch.
 - When the user replies `REVIEW BLOCKED <gate_id>: <short reason>`, mark the review gate `BLOCKED` in `TASKS.md`, create or update `reports/review_gate_<gate_id>_blocked.md`, record the reason, commit with `Block review gate <gate_id>`, and stop.
 
 ## Unity Safety
