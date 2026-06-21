@@ -32,6 +32,26 @@ namespace IdleGuildDemo.UI
       _hideRoutine = StartCoroutine(HideAfterDelay());
     }
 
+    public void ShowLevelUp(int level)
+    {
+      Show($"Level up! Level {level}");
+    }
+
+    public void ShowQuestComplete(string questName)
+    {
+      Show(string.IsNullOrEmpty(questName) ? "Quest complete!" : $"Quest complete: {questName}");
+    }
+
+    public void ShowItemCrafted(string itemName)
+    {
+      Show(string.IsNullOrEmpty(itemName) ? "Item crafted!" : $"Crafted {itemName}");
+    }
+
+    public void ShowReward(string rewardSummary)
+    {
+      Show(string.IsNullOrEmpty(rewardSummary) ? "Reward claimed!" : rewardSummary);
+    }
+
     private IEnumerator HideAfterDelay()
     {
       yield return new WaitForSeconds(displayDuration);

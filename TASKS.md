@@ -311,7 +311,7 @@ Commit: Add class and talent UI integration
 
 ## Task 30
 
-Status: READY
+Status: DONE
 Title: Economy and reward feedback
 Commit: Add economy and reward feedback
 
