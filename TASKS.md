@@ -276,7 +276,7 @@ Commit: Add class selection system
 
 ## Task 28
 
-Status: READY
+Status: DONE
 Title: Talent system
 
 Allowed files:

@@ -9,6 +9,7 @@ namespace IdleGuildDemo.Systems
     public sealed class ProgressionSystem
     {
         private readonly ClassSelectionSystem classSelectionSystem = new ClassSelectionSystem();
+        private readonly TalentSystem talentSystem = new TalentSystem();
 
         public int GetXpRequiredForLevel(int level)
         {
@@ -73,88 +74,22 @@ namespace IdleGuildDemo.Systems
 
         public bool IsValidTalentId(string talentId)
         {
-            return talentId == GameConstants.DamageTalentId
-                || talentId == GameConstants.MiningSpeedTalentId
-                || talentId == GameConstants.XpGainTalentId
-                || talentId == GameConstants.AfkGainTalentId;
+            return talentSystem.IsValidTalentId(talentId);
         }
 
         public int GetTalentRank(CharacterState character, string talentId)
         {
-            if (character == null || !IsValidTalentId(talentId))
-            {
-                return 0;
-            }
+            return talentSystem.GetTalentRank(character, talentId);
+        }
 
-            character.Normalize();
-
-            foreach (TalentState talent in character.talents)
-            {
-                if (talent.talentId == talentId)
-                {
-                    return talent.rank;
-                }
-            }
-
-            return 0;
+        public bool CanSpendTalentPoint(CharacterState character, string talentId)
+        {
+            return talentSystem.CanSpendTalentPoint(character, talentId);
         }
 
         public TalentSpendResult SpendTalentPoint(CharacterState character, string talentId)
         {
-            TalentSpendResult result = new TalentSpendResult
-            {
-                talentId = talentId ?? string.Empty
-            };
-
-            if (character == null)
-            {
-                result.failureReason = "Character is missing.";
-                return result;
-            }
-
-            character.Normalize();
-            result.remainingTalentPoints = character.unspentTalentPoints;
-
-            if (!IsValidTalentId(talentId))
-            {
-                result.failureReason = "Invalid talent ID.";
-                return result;
-            }
-
-            if (character.unspentTalentPoints <= 0)
-            {
-                result.failureReason = "No unspent talent points.";
-                return result;
-            }
-
-            TalentState talent = FindTalent(character, talentId);
-            if (talent == null)
-            {
-                talent = new TalentState(talentId, 0);
-                character.talents.Add(talent);
-            }
-
-            talent.Normalize();
-            result.oldRank = talent.rank;
-            talent.rank++;
-            character.unspentTalentPoints--;
-            result.newRank = talent.rank;
-            result.remainingTalentPoints = character.unspentTalentPoints;
-            result.success = true;
-            return result;
-        }
-
-        private static TalentState FindTalent(CharacterState character, string talentId)
-        {
-            foreach (TalentState talent in character.talents)
-            {
-                if (talent != null && talent.talentId == talentId)
-                {
-                    return talent;
-                }
-            }
-
-            return null;
+            return talentSystem.SpendTalentPoint(character, talentId);
         }
     }
 }

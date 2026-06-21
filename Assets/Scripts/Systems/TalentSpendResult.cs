@@ -9,6 +9,7 @@ namespace IdleGuildDemo.Systems
         public string talentId = string.Empty;
         public int oldRank;
         public int newRank;
+        public int maxRank;
         public int remainingTalentPoints;
         public string failureReason = string.Empty;
     }
