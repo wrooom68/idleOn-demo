@@ -32,8 +32,8 @@ namespace IdleGuildDemo.Core
                 return ServiceRegistry.Instance.IsInitialized;
             }
 
-            Debug.LogError("GameBootstrap exists but ServiceRegistry is not initialized.");
-            return false;
+            existingBootstrap.InitializeIfNeeded();
+            return ServiceRegistry.Instance.IsInitialized;
         }
 
         private void Awake()
@@ -41,6 +41,16 @@ namespace IdleGuildDemo.Core
             if (ServiceRegistry.Instance.IsInitialized)
             {
                 Destroy(gameObject);
+                return;
+            }
+
+            InitializeIfNeeded();
+        }
+
+        private void InitializeIfNeeded()
+        {
+            if (ServiceRegistry.Instance.IsInitialized)
+            {
                 return;
             }
 
