@@ -141,7 +141,10 @@ namespace IdleGuildDemo.UI
           talentSystem.GetTalentRank(_character, talentId),
           TalentSystem.MaxTalentRank,
           talentSystem.CanSpendTalentPoint(_character, talentId));
-        node.BindUpgrade(SpendTalentPoint);
+        node.BindUpgrade(talentId =>
+        {
+          SpendTalentPoint(talentId);
+        });
         _spawnedNodes.Add(node);
       }
     }
