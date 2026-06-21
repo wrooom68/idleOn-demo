@@ -19,13 +19,17 @@ namespace IdleGuildDemo.Editor
         private const string MinePath = "Assets/Scenes/MineZone.unity";
         private const string SlimeDefinitionPath = "Assets/Data/Enemies/Enemy_Slime.asset";
 
-        private static readonly Color BackgroundColor = new Color(0.035f, 0.045f, 0.065f, 1f);
-        private static readonly Color PanelColor = new Color(0.11f, 0.13f, 0.18f, 0.96f);
-        private static readonly Color SubPanelColor = new Color(0.16f, 0.19f, 0.25f, 0.96f);
-        private static readonly Color ButtonColor = new Color(0.23f, 0.32f, 0.48f, 1f);
-        private static readonly Color ButtonHighlightColor = new Color(0.31f, 0.42f, 0.62f, 1f);
-        private static readonly Color TextColor = new Color(0.94f, 0.96f, 1f, 1f);
-        private static readonly Color MutedTextColor = new Color(0.72f, 0.78f, 0.86f, 1f);
+        private static readonly Color BackgroundColor = new Color(0.043f, 0.063f, 0.125f, 1f); // #0B1020
+        private static readonly Color PanelColor = new Color(0.122f, 0.161f, 0.216f, 1f); // #1F2937
+        private static readonly Color SubPanelColor = new Color(0.153f, 0.208f, 0.286f, 1f); // #273549
+        private static readonly Color ButtonColor = new Color(0.420f, 0.306f, 0.180f, 1f); // #6B4E2E
+        private static readonly Color ButtonHighlightColor = new Color(0.55f, 0.42f, 0.28f, 1f);
+        private static readonly Color TextColor = new Color(0.976f, 0.980f, 0.984f, 1f); // #F9FAFB
+        private static readonly Color MutedTextColor = new Color(0.718f, 0.753f, 0.800f, 1f); // #B7C0CC
+        private static readonly Color GoldColor = new Color(0.953f, 0.788f, 0.365f, 1f); // #F3C95D
+        private static readonly Color LightGreenColor = new Color(0.718f, 0.969f, 0.718f, 1f); // #B7F7B7
+        private static readonly Color BlueColor = new Color(0.302f, 0.639f, 1f, 1f); // #4DA3FF
+        private static readonly Color RedColor = new Color(0.851f, 0.290f, 0.290f, 1f); // #D94A4A
 
         private static Font cachedFont;
 
@@ -53,16 +57,24 @@ namespace IdleGuildDemo.Editor
             MainMenuView view = viewObject.AddComponent<MainMenuView>();
 
             CreatePanel(canvas.transform, "Background", BackgroundColor, Stretch());
-            GameObject titlePanel = CreatePanel(canvas.transform, "TitlePanel", PanelColor, Center(0f, 90f, 760f, 520f));
-            CreateText(titlePanel.transform, "TitleText", "Idle Guild", 56, TextAnchor.MiddleCenter, Rect(0f, 160f, 680f, 92f));
-            CreateText(titlePanel.transform, "SubtitleText", "A small backend-first idle RPG demo", 28, TextAnchor.MiddleCenter, Rect(0f, 90f, 680f, 54f), MutedTextColor);
+            
+            // Panel_TitleBlock (matching Frame_01_MainMenu)
+            GameObject titleBlock = CreatePanel(canvas.transform, "Panel_TitleBlock", PanelColor, Center(0f, 215f, 800f, 190f));
+            CreateText(titleBlock.transform, "Text_GameTitle", "Idle Guild Demo", 64, TextAnchor.MiddleCenter, Rect(0f, 30f, 760f, 86f));
+            CreateText(titleBlock.transform, "Text_Subtitle", "Early-game idle RPG vertical slice", 28, TextAnchor.MiddleCenter, Rect(0f, -40f, 760f, 38f), MutedTextColor);
 
-            Button newGameButton = CreateButton(titlePanel.transform, "NewGameButton", "New Game", Rect(0f, 10f, 420f, 72f));
-            Button continueButton = CreateButton(titlePanel.transform, "ContinueButton", "Continue", Rect(0f, -78f, 420f, 72f));
-            Button resetButton = CreateButton(titlePanel.transform, "DeleteSaveButton", "Delete Save", Rect(0f, -166f, 420f, 64f));
-            Text evaluationNoteText = CreateText(titlePanel.transform, "EvaluationNoteText", "Evaluation note: systems-first demo flow for quick testing.", 24, TextAnchor.MiddleCenter, Rect(0f, -248f, 680f, 54f), MutedTextColor);
-            Text statusText = CreateText(titlePanel.transform, "StatusText", "Ready", 22, TextAnchor.MiddleCenter, Rect(0f, -304f, 680f, 42f), MutedTextColor);
-            CreateText(canvas.transform, "BuildVersionText", "Unity demo build", 22, TextAnchor.LowerRight, Anchored(1f, 0f, 1f, 0f, -260f, 20f, 240f, 40f), MutedTextColor);
+            // Panel_MenuButtons (matching Frame_01_MainMenu)
+            GameObject menuPanel = CreatePanel(canvas.transform, "Panel_MenuButtons", PanelColor, Center(0f, -60f, 500f, 240f));
+            Button newGameButton = CreateButton(menuPanel.transform, "Button_NewGame", "New Game", Rect(0f, 75f, 320f, 58f));
+            Button continueButton = CreateButton(menuPanel.transform, "Button_Continue", "Continue", Rect(0f, 15f, 320f, 58f));
+            Button resetButton = CreateButton(menuPanel.transform, "Button_DeleteSave", "Delete Save", Rect(0f, -45f, 320f, 48f));
+
+            // Status and Notes
+            Text evaluationNoteText = CreateText(canvas.transform, "Text_EvaluationNote", "Designed to show all major systems in under 30 minutes.", 28, TextAnchor.MiddleCenter, Center(0f, -220f, 800f, 50f), GoldColor);
+            Text statusText = CreateText(canvas.transform, "Text_Status", "Ready", 22, TextAnchor.MiddleCenter, Center(0f, -270f, 800f, 42f), MutedTextColor);
+            
+            // Build Version (matching Frame_01_MainMenu)
+            CreateText(canvas.transform, "Text_BuildVersionPlaceholder", "Build v0.1", 20, TextAnchor.LowerRight, Anchored(1f, 0f, 1f, 0f, -150f, 40f, 240f, 40f), MutedTextColor);
 
             AssignObject(view, "newGameButton", newGameButton);
             AssignObject(view, "continueButton", continueButton);
@@ -85,37 +97,67 @@ namespace IdleGuildDemo.Editor
             TownHUDView view = viewObject.AddComponent<TownHUDView>();
 
             CreatePanel(canvas.transform, "Background", BackgroundColor, Stretch());
-            CreatePanel(canvas.transform, "TopBar", PanelColor, Top(0f, -42f, 1920f, 84f));
-            Text coinsText = CreateText(canvas.transform, "CoinsInventoryText", "Coins 0 | Slime Goo 0 | Copper Ore 0", 26, TextAnchor.MiddleLeft, Anchored(0f, 1f, 0f, 1f, 36f, -42f, 820f, 56f));
-            CreateText(canvas.transform, "SaveText", "Autosave ready", 22, TextAnchor.MiddleRight, Anchored(1f, 1f, 1f, 1f, -360f, -42f, 320f, 56f), MutedTextColor);
+            
+            // Panel_TopBar (matching Frame_02_TownHUD)
+            GameObject topBar = CreatePanel(canvas.transform, "Panel_TopBar", PanelColor, Top(0f, -42f, 1872f, 78f));
+            Text coinsText = CreateText(topBar.transform, "Text_Coins", "Coins: 150", 26, TextAnchor.MiddleLeft, Anchored(0f, 0.5f, 0f, 0.5f, 140f, 0f, 220f, 35f), GoldColor);
+            Button inventoryButton = CreateButton(topBar.transform, "Button_Inventory", "Inventory", Anchored(1f, 0.5f, 1f, 0.5f, -100f, 0f, 160f, 50f));
+            CreateText(topBar.transform, "Text_SaveNote", "Autosave ready", 22, TextAnchor.MiddleRight, Anchored(1f, 0.5f, 1f, 0.5f, -320f, 0f, 240f, 35f), MutedTextColor);
 
-            GameObject characterPanel = CreatePanel(canvas.transform, "CharacterCard", PanelColor, Anchored(0f, 1f, 0f, 1f, 36f, -200f, 360f, 220f));
-            Text activeCharacterText = CreateText(characterPanel.transform, "CharacterNameText", "Character 1", 30, TextAnchor.MiddleLeft, Rect(0f, 66f, 300f, 46f));
-            Text levelText = CreateText(characterPanel.transform, "LevelText", "Level 1 | XP 0", 24, TextAnchor.MiddleLeft, Rect(0f, 14f, 300f, 42f), MutedTextColor);
-            Text xpText = CreateText(characterPanel.transform, "XpText", "XP 0", 24, TextAnchor.MiddleLeft, Rect(0f, -36f, 300f, 42f), MutedTextColor);
-            Text taskText = CreateText(characterPanel.transform, "TaskText", "Task: idle", 22, TextAnchor.MiddleLeft, Rect(0f, -86f, 300f, 42f), MutedTextColor);
+            // Panel_CharacterCard (matching Frame_02_TownHUD)
+            GameObject charCard = CreatePanel(canvas.transform, "Panel_CharacterCard", PanelColor, Anchored(0f, 1f, 0f, 1f, 204f, -241f, 360f, 235f));
+            GameObject portraitGo = CreatePanel(charCard.transform, "Image_PlayerPortrait", SubPanelColor, Anchored(0f, 1f, 0f, 1f, 67f, -67f, 86f, 86f));
+            CreateText(portraitGo.transform, "Label", "Portrait", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            Text activeCharacterText = CreateText(charCard.transform, "Text_CharacterName", "Ruchir", 30, TextAnchor.MiddleLeft, Anchored(0.5f, 1f, 0.5f, 1f, 40f, -40f, 210f, 40f));
+            Text levelText = CreateText(charCard.transform, "Text_Level", "Level 4 Beginner", 22, TextAnchor.MiddleLeft, Anchored(0.5f, 1f, 0.5f, 1f, 40f, -75f, 210f, 30f), MutedTextColor);
+            Button characterPanelButton = CreateButton(charCard.transform, "Button_SwitchCharacter", "Switch", Anchored(1f, 1f, 1f, 1f, -72f, -40f, 112f, 44f));
+            
+            // ProgressBar_XP (nested text inside)
+            Image xpFill = CreateProgressBar(charCard.transform, "ProgressBar_XP", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 34f), BlueColor);
+            Text xpText = CreateText(xpFill.transform.parent, "Text_ProgressBar_XP_Label", "60 / 105 XP", 18, TextAnchor.MiddleCenter, Stretch());
+            
+            Text taskText = CreateText(charCard.transform, "Text_CurrentTask", "Current Task: Fighting Slimes", 18, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 30f, 315f, 24f), MutedTextColor);
 
-            GameObject questPanel = CreatePanel(canvas.transform, "QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 36f, 40f, 420f, 260f));
-            CreateText(questPanel.transform, "QuestTitleText", "Quest Tracker", 30, TextAnchor.UpperLeft, Rect(0f, 82f, 360f, 60f));
-            CreateText(questPanel.transform, "QuestBodyText", "Current quest progress appears here once the quest UI is wired.", 24, TextAnchor.UpperLeft, Rect(0f, -24f, 360f, 138f), MutedTextColor);
+            // Panel_QuestTracker (matching Frame_02_TownHUD)
+            GameObject questPanel = CreatePanel(canvas.transform, "Panel_QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 204f, -40f, 360f, 220f));
+            CreateText(questPanel.transform, "Text_QuestTitle", "Quest: First Hunt", 26, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -30f, 310f, 35f), GoldColor);
+            CreateText(questPanel.transform, "Text_QuestObjective", "Kill 5 Slimes", 22, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -65f, 310f, 30f));
+            
+            Image questFill = CreateProgressBar(questPanel.transform, "ProgressBar_QuestProgress", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 30f), GoldColor);
+            CreateText(questFill.transform.parent, "Text_ProgressBar_QuestProgress_Label", "2 / 5", 18, TextAnchor.MiddleCenter, Stretch());
+            CreateButton(questPanel.transform, "Button_ClaimReward_Disabled", "Claim", Anchored(0f, 0f, 0f, 0f, 94f, 35f, 140f, 38f));
 
-            GameObject worldPanel = CreatePanel(canvas.transform, "TownWorldArea", SubPanelColor, Center(120f, -10f, 820f, 500f));
-            CreateText(worldPanel.transform, "WorldTitleText", "Town", 40, TextAnchor.MiddleCenter, Rect(0f, 70f, 620f, 80f));
-            CreateText(worldPanel.transform, "WorldBodyText", "Guild hall, crafting bench, mine road, and slime trail placeholders", 26, TextAnchor.MiddleCenter, Rect(0f, -10f, 680f, 110f), MutedTextColor);
+            // WorldArea_Town (matching Frame_02_TownHUD)
+            GameObject worldPanel = CreatePanel(canvas.transform, "WorldArea_Town", SubPanelColor, Center(125f, -50f, 1010f, 690f));
+            CreateText(worldPanel.transform, "Text_WorldAreaTitle", "Town Hub", 34, TextAnchor.MiddleCenter, Rect(0f, 290f, 400f, 46f));
+            
+            GameObject npcGo = CreatePanel(worldPanel.transform, "Image_QuestNPC", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 160f, 60f, 140f, 180f));
+            CreateText(npcGo.transform, "Label", "Quest NPC", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            GameObject craftGo = CreatePanel(worldPanel.transform, "Image_CraftingStation", PanelColor, Rect(35f, 50f, 180f, 150f));
+            CreateText(craftGo.transform, "Label", "Crafting", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            GameObject storageGo = CreatePanel(worldPanel.transform, "Image_StorageChest", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -160f, 60f, 150f, 130f));
+            CreateText(storageGo.transform, "Label", "Storage", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
 
-            GameObject logPanel = CreatePanel(canvas.transform, "RecentRewardLog", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -300f, -20f, 420f, 440f));
-            Text inventoryText = CreateText(logPanel.transform, "InventoryText", "Inventory: Slime Goo 0, Copper Ore 0", 24, TextAnchor.UpperLeft, Rect(0f, 112f, 350f, 120f), MutedTextColor);
-            Text statusText = CreateText(logPanel.transform, "StatusText", "Ready", 24, TextAnchor.UpperLeft, Rect(0f, -40f, 350f, 170f), MutedTextColor);
+            // Activity buttons at bottom of Town Hub (matching Frame_02_TownHUD)
+            Button combatButton = CreateButton(worldPanel.transform, "Button_GoCombat", "Fight Slimes", Rect(-270f, -120f, 220f, 58f));
+            Button miningButton = CreateButton(worldPanel.transform, "Button_GoMining", "Mine Copper", Rect(-30f, -120f, 220f, 58f));
+            Button characterPanelButton2 = CreateButton(worldPanel.transform, "Button_ClassTalent", "Class / Talents", Rect(220f, -120f, 250f, 58f));
+            Button simulateAfkButton = CreateButton(worldPanel.transform, "Button_SimulateAfk", "Simulate 2 Hours AFK", Rect(-100f, -210f, 350f, 58f));
+            CreateText(worldPanel.transform, "Text_AfkHelperNote", "Evaluation helper", 18, TextAnchor.MiddleLeft, Rect(200f, -210f, 210f, 24f), GoldColor);
 
-            GameObject buttonPanel = CreatePanel(canvas.transform, "ActivityButtons", PanelColor, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 110f, 1180f, 120f));
-            Button combatButton = CreateButton(buttonPanel.transform, "FightSlimesButton", "Fight Slimes", Rect(-470f, 0f, 200f, 70f));
-            Button miningButton = CreateButton(buttonPanel.transform, "MineCopperButton", "Mine Copper", Rect(-235f, 0f, 200f, 70f));
-            Button inventoryButton = CreateButton(buttonPanel.transform, "InventoryButton", "Inventory", Rect(0f, 0f, 200f, 70f));
-            Button characterPanelButton = CreateButton(buttonPanel.transform, "CharacterTalentsButton", "Character / Talents", Rect(235f, 0f, 250f, 70f));
-            Button simulateAfkButton = CreateButton(buttonPanel.transform, "SimulateAfkButton", "Simulate 2 Hours AFK", Rect(520f, 0f, 300f, 70f));
+            // Panel_LootLog (matching Frame_02_TownHUD)
+            GameObject logPanel = CreatePanel(canvas.transform, "Panel_LootLog", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -204f, -40f, 360f, 310f));
+            CreateText(logPanel.transform, "Text_LootLogTitle", "Recent", 28, TextAnchor.UpperLeft, Rect(0f, 110f, 300f, 38f));
+            CreateText(logPanel.transform, "Row_Loot_XP", "+5 XP", 22, TextAnchor.UpperLeft, Rect(0f, 60f, 300f, 30f), LightGreenColor);
+            CreateText(logPanel.transform, "Row_Loot_Coins", "+3 Coins", 22, TextAnchor.UpperLeft, Rect(0f, 20f, 300f, 30f), GoldColor);
+            Text inventoryText = CreateText(logPanel.transform, "Row_Loot_Item", "+1 Slime Goo", 22, TextAnchor.UpperLeft, Rect(0f, -20f, 300f, 30f), LightGreenColor);
+            Text statusText = CreateText(logPanel.transform, "Row_Loot_Info", "Recent rewards appear here", 18, TextAnchor.UpperLeft, Rect(0f, -80f, 300f, 50f), MutedTextColor);
 
             AssignObject(view, "inventoryButton", inventoryButton);
-            AssignObject(view, "characterPanelButton", characterPanelButton);
+            AssignObject(view, "characterPanelButton", characterPanelButton2);
             AssignObject(view, "combatButton", combatButton);
             AssignObject(view, "miningButton", miningButton);
             AssignObject(view, "simulateAfkButton", simulateAfkButton);
@@ -142,34 +184,74 @@ namespace IdleGuildDemo.Editor
             CombatHUDView view = viewObject.AddComponent<CombatHUDView>();
 
             CreatePanel(canvas.transform, "Background", BackgroundColor, Stretch());
-            CreatePanel(canvas.transform, "TopBar", PanelColor, Top(0f, -42f, 1920f, 84f));
-            Button backButton = CreateButton(canvas.transform, "BackToTownButton", "Back to Town", Anchored(0f, 1f, 0f, 1f, 36f, -42f, 230f, 58f));
-            CreateText(canvas.transform, "TopStatsText", "Coins and inventory update after rewards save", 24, TextAnchor.MiddleRight, Anchored(1f, 1f, 1f, 1f, -520f, -42f, 480f, 56f), MutedTextColor);
+            
+            // Panel_TopBar (matching Frame_03_CombatHUD)
+            GameObject topBar = CreatePanel(canvas.transform, "Panel_TopBar", PanelColor, Top(0f, -42f, 1872f, 78f));
+            Button backButton = CreateButton(topBar.transform, "Button_BackToTown", "Town", Anchored(0f, 0.5f, 0f, 0.5f, 100f, 0f, 140f, 50f));
+            Text coinsText = CreateText(topBar.transform, "Text_Coins", "Coins: 150", 26, TextAnchor.MiddleLeft, Anchored(0f, 0.5f, 0f, 0.5f, 260f, 0f, 220f, 35f), GoldColor);
+            Button inventoryButton = CreateButton(topBar.transform, "Button_Inventory", "Inventory", Anchored(1f, 0.5f, 1f, 0.5f, -100f, 0f, 160f, 50f));
 
-            GameObject characterPanel = CreatePanel(canvas.transform, "CharacterCard", PanelColor, Anchored(0f, 1f, 0f, 1f, 36f, -205f, 380f, 230f));
-            Text characterText = CreateText(characterPanel.transform, "CharacterText", "Character 1 L1 XP 0", 26, TextAnchor.UpperLeft, Rect(0f, 70f, 320f, 120f));
+            // Panel_CharacterCard (matching Frame_03_CombatHUD)
+            GameObject charCard = CreatePanel(canvas.transform, "Panel_CharacterCard", PanelColor, Anchored(0f, 1f, 0f, 1f, 204f, -241f, 360f, 235f));
+            GameObject portraitGo = CreatePanel(charCard.transform, "Image_PlayerPortrait", SubPanelColor, Anchored(0f, 1f, 0f, 1f, 67f, -67f, 86f, 86f));
+            CreateText(portraitGo.transform, "Label", "Portrait", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            Text characterNameText = CreateText(charCard.transform, "Text_CharacterName", "Ruchir", 30, TextAnchor.MiddleLeft, Anchored(0.5f, 1f, 0.5f, 1f, 40f, -40f, 210f, 40f));
+            Text levelText = CreateText(charCard.transform, "Text_Level", "Level 4 Beginner", 22, TextAnchor.MiddleLeft, Anchored(0.5f, 1f, 0.5f, 1f, 40f, -75f, 210f, 30f), MutedTextColor);
+            
+            Image xpFill = CreateProgressBar(charCard.transform, "ProgressBar_XP", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 34f), BlueColor);
+            CreateText(xpFill.transform.parent, "Text_ProgressBar_XP_Label", "60 / 105 XP", 18, TextAnchor.MiddleCenter, Stretch());
+            CreateText(charCard.transform, "Text_CurrentTask", "Current Task: Fighting Slimes", 18, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 30f, 315f, 24f), MutedTextColor);
+            CreateText(charCard.transform, "Text_DamageStat", "Damage: 4", 18, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 4f, 300f, 24f), LightGreenColor);
 
-            GameObject questPanel = CreatePanel(canvas.transform, "QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 36f, 20f, 420f, 260f));
-            CreateText(questPanel.transform, "QuestText", "Quest Tracker\nDefeat Slimes", 26, TextAnchor.UpperLeft, Rect(0f, 20f, 350f, 170f), MutedTextColor);
+            // Consolidated Text field for the card reference
+            Text characterText = CreateText(canvas.transform, "Text_Character_Consolidated", "Character 1 L1 XP 0", 1, TextAnchor.MiddleLeft, Rect(0f, 0f, 0f, 0f));
+            characterText.gameObject.SetActive(false); // Used only to satisfy the view serialization hook
 
-            GameObject combatPanel = CreatePanel(canvas.transform, "CombatArena", SubPanelColor, Center(120f, -20f, 860f, 520f));
-            CreateText(combatPanel.transform, "PlayerPlaceholder", "Player", 34, TextAnchor.MiddleCenter, Rect(-250f, 40f, 220f, 100f));
-            CreateText(combatPanel.transform, "SlimePlaceholder", "Slime", 34, TextAnchor.MiddleCenter, Rect(250f, 40f, 220f, 100f));
-            Text enemyText = CreateText(combatPanel.transform, "EnemyHpText", "Slime HP --", 28, TextAnchor.MiddleCenter, Rect(0f, -108f, 500f, 60f));
-            Image enemyHpFill = CreateProgressBar(combatPanel.transform, "EnemyHpBar", Rect(0f, -164f, 520f, 34f), new Color(0.78f, 0.2f, 0.25f, 1f));
-            Button startButton = CreateButton(combatPanel.transform, "StartSlimeCombatButton", "Start Slime Combat", Rect(-145f, -230f, 270f, 66f));
-            Button attackButton = CreateButton(combatPanel.transform, "AttackTickButton", "Attack Tick", Rect(155f, -230f, 230f, 66f));
+            // Panel_QuestTracker (matching Frame_03_CombatHUD)
+            GameObject questPanel = CreatePanel(canvas.transform, "Panel_QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 204f, -40f, 360f, 220f));
+            CreateText(questPanel.transform, "Text_QuestTitle", "Quest: First Hunt", 26, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -30f, 310f, 35f), GoldColor);
+            CreateText(questPanel.transform, "Text_QuestObjective", "Kill 5 Slimes", 22, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -65f, 310f, 30f));
+            
+            Image questFill = CreateProgressBar(questPanel.transform, "ProgressBar_QuestProgress", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 30f), GoldColor);
+            CreateText(questFill.transform.parent, "Text_ProgressBar_QuestProgress_Label", "4 / 5", 18, TextAnchor.MiddleCenter, Stretch());
+            CreateButton(questPanel.transform, "Button_ClaimReward_Disabled", "Claim", Anchored(0f, 0f, 0f, 0f, 94f, 35f, 140f, 38f));
 
-            GameObject logPanel = CreatePanel(canvas.transform, "LootResultLog", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -300f, -20f, 420f, 440f));
-            Text rewardText = CreateText(logPanel.transform, "RewardText", "Loot/result log", 24, TextAnchor.UpperLeft, Rect(0f, 92f, 350f, 150f), MutedTextColor);
-            Text statusText = CreateText(logPanel.transform, "StatusText", "Ready", 24, TextAnchor.UpperLeft, Rect(0f, -80f, 350f, 170f), MutedTextColor);
+            // WorldArea_Combat (matching Frame_03_CombatHUD)
+            GameObject combatPanel = CreatePanel(canvas.transform, "WorldArea_Combat", SubPanelColor, Center(125f, -50f, 1010f, 690f));
+            CreateText(combatPanel.transform, "Text_WorldAreaTitle", "Combat Zone", 34, TextAnchor.MiddleCenter, Rect(0f, 290f, 400f, 46f));
+            
+            GameObject playerGo = CreatePanel(combatPanel.transform, "Image_Player", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 160f, 60f, 150f, 210f));
+            CreateText(playerGo.transform, "Label", "Player", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            GameObject slimeGo = CreatePanel(combatPanel.transform, "Image_Slime", new Color(0.310f, 0.706f, 0.467f, 1f), Anchored(1f, 0.5f, 1f, 0.5f, -160f, 60f, 130f, 120f));
+            CreateText(slimeGo.transform, "Label", "Slime", 18, TextAnchor.MiddleCenter, Stretch(), TextColor);
+
+            Text enemyText = CreateText(combatPanel.transform, "Text_EnemyName", "Slime", 28, TextAnchor.MiddleCenter, Rect(160f, 160f, 180f, 38f));
+            Image enemyHpFill = CreateProgressBar(combatPanel.transform, "ProgressBar_EnemyHP", Rect(160f, 210f, 250f, 36f), RedColor);
+            CreateText(enemyHpFill.transform.parent, "Text_ProgressBar_EnemyHP_Label", "6 / 10 HP", 18, TextAnchor.MiddleCenter, Stretch());
+
+            CreateText(combatPanel.transform, "FloatingText_DamageExample", "-4", 42, TextAnchor.MiddleCenter, Rect(160f, 110f, 120f, 57f), RedColor);
+            CreateText(combatPanel.transform, "Text_AutoCombatNote", "Auto-attacking — no attack button", 24, TextAnchor.MiddleCenter, Rect(0f, -80f, 460f, 32f), MutedTextColor);
+
+            // Manual Interactive Buttons (Start Combat, Attack Tick) placed nicely
+            Button startButton = CreateButton(combatPanel.transform, "Button_StartSlimeCombat", "Start Slime Combat", Rect(-145f, -210f, 270f, 58f));
+            Button attackButton = CreateButton(combatPanel.transform, "Button_AttackTick", "Attack Tick", Rect(155f, -210f, 230f, 58f));
+
+            // Panel_LootLog (matching Frame_03_CombatHUD)
+            GameObject logPanel = CreatePanel(canvas.transform, "Panel_LootLog", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -204f, -40f, 360f, 310f));
+            CreateText(logPanel.transform, "Text_LootLogTitle", "Loot Log", 28, TextAnchor.UpperLeft, Rect(0f, 110f, 300f, 38f));
+            CreateText(logPanel.transform, "Row_Loot_XP", "+5 XP", 22, TextAnchor.UpperLeft, Rect(0f, 60f, 300f, 30f), LightGreenColor);
+            CreateText(logPanel.transform, "Row_Loot_Coins", "+3 Coins", 22, TextAnchor.UpperLeft, Rect(0f, 20f, 300f, 30f), GoldColor);
+            Text rewardText = CreateText(logPanel.transform, "Row_Loot_Item", "+1 Slime Goo", 22, TextAnchor.UpperLeft, Rect(0f, -20f, 300f, 30f), LightGreenColor);
+            Text statusText = CreateText(logPanel.transform, "Row_Loot_Info", "Recent rewards appear here", 18, TextAnchor.UpperLeft, Rect(0f, -80f, 300f, 50f), MutedTextColor);
 
             AssignObject(view, "slimeDefinition", AssetDatabase.LoadAssetAtPath<EnemyDefinition>(SlimeDefinitionPath));
             AssignObject(view, "backToTownButton", backButton);
             AssignObject(view, "startCombatButton", startButton);
             AssignObject(view, "attackButton", attackButton);
             AssignObject(view, "enemyHpFill", enemyHpFill);
-            AssignObject(view, "characterText", characterText);
+            AssignObject(view, "characterText", characterText); //satisfy serialization
             AssignObject(view, "enemyText", enemyText);
             AssignObject(view, "rewardText", rewardText);
             AssignObject(view, "statusText", statusText);
@@ -189,33 +271,68 @@ namespace IdleGuildDemo.Editor
             MiningHUDView view = viewObject.AddComponent<MiningHUDView>();
 
             CreatePanel(canvas.transform, "Background", BackgroundColor, Stretch());
-            CreatePanel(canvas.transform, "TopBar", PanelColor, Top(0f, -42f, 1920f, 84f));
-            Button backButton = CreateButton(canvas.transform, "BackToTownButton", "Back to Town", Anchored(0f, 1f, 0f, 1f, 36f, -42f, 230f, 58f));
-            CreateText(canvas.transform, "TopStatsText", "Copper Ore appears in inventory after completed ticks", 24, TextAnchor.MiddleRight, Anchored(1f, 1f, 1f, 1f, -580f, -42f, 540f, 56f), MutedTextColor);
+            
+            // Panel_TopBar (matching Frame_04_MiningHUD)
+            GameObject topBar = CreatePanel(canvas.transform, "Panel_TopBar", PanelColor, Top(0f, -42f, 1872f, 78f));
+            Button backButton = CreateButton(topBar.transform, "Button_BackToTown", "Town", Anchored(0f, 0.5f, 0f, 0.5f, 100f, 0f, 140f, 50f));
+            Text coinsText = CreateText(topBar.transform, "Text_Coins", "Coins: 150", 26, TextAnchor.MiddleLeft, Anchored(0f, 0.5f, 0f, 0.5f, 260f, 0f, 220f, 35f), GoldColor);
+            Button inventoryButton = CreateButton(topBar.transform, "Button_Inventory", "Inventory", Anchored(1f, 0.5f, 1f, 0.5f, -100f, 0f, 160f, 50f));
 
-            GameObject characterPanel = CreatePanel(canvas.transform, "CharacterCard", PanelColor, Anchored(0f, 1f, 0f, 1f, 36f, -205f, 380f, 230f));
-            Text characterText = CreateText(characterPanel.transform, "CharacterText", "Character 1 L1 XP 0", 26, TextAnchor.UpperLeft, Rect(0f, 70f, 320f, 120f));
+            // Panel_CharacterCard (matching Frame_04_MiningHUD)
+            GameObject charCard = CreatePanel(canvas.transform, "Panel_CharacterCard", PanelColor, Anchored(0f, 1f, 0f, 1f, 204f, -241f, 360f, 235f));
+            GameObject portraitGo = CreatePanel(charCard.transform, "Image_PlayerPortrait", SubPanelColor, Anchored(0f, 1f, 0f, 1f, 67f, -67f, 86f, 86f));
+            CreateText(portraitGo.transform, "Label", "Portrait", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            Text characterNameText = CreateText(charCard.transform, "Text_CharacterName", "Ruchir", 30, TextAnchor.MiddleLeft, Anchored(0.5f, 1f, 0.5f, 1f, 40f, -40f, 210f, 40f));
+            Text levelText = CreateText(charCard.transform, "Text_Level", "Level 4 Beginner", 22, TextAnchor.MiddleLeft, Anchored(0.5f, 1f, 0.5f, 1f, 40f, -75f, 210f, 30f), MutedTextColor);
+            
+            Image xpFill = CreateProgressBar(charCard.transform, "ProgressBar_XP", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 34f), BlueColor);
+            CreateText(xpFill.transform.parent, "Text_ProgressBar_XP_Label", "60 / 105 XP", 18, TextAnchor.MiddleCenter, Stretch());
+            CreateText(charCard.transform, "Text_CurrentTask", "Current Task: Fighting Slimes", 18, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 30f, 315f, 24f), MutedTextColor);
+            CreateText(charCard.transform, "Text_MiningStat", "Mining Speed: 1.2x", 18, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 4f, 300f, 24f), LightGreenColor);
 
-            GameObject questPanel = CreatePanel(canvas.transform, "QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 36f, 20f, 420f, 260f));
-            CreateText(questPanel.transform, "QuestText", "Quest Tracker\nCollect Copper Ore", 26, TextAnchor.UpperLeft, Rect(0f, 20f, 350f, 170f), MutedTextColor);
+            // Consolidated Text field for card serialization
+            Text characterText = CreateText(canvas.transform, "Text_Character_Consolidated", "Character 1 L1 XP 0", 1, TextAnchor.MiddleLeft, Rect(0f, 0f, 0f, 0f));
+            characterText.gameObject.SetActive(false);
 
-            GameObject minePanel = CreatePanel(canvas.transform, "MiningArea", SubPanelColor, Center(120f, -20f, 860f, 520f));
-            CreateText(minePanel.transform, "PlayerPlaceholder", "Player", 34, TextAnchor.MiddleCenter, Rect(-250f, 40f, 220f, 100f));
-            CreateText(minePanel.transform, "CopperNodePlaceholder", "Copper Node", 34, TextAnchor.MiddleCenter, Rect(250f, 40f, 260f, 100f));
-            Text progressText = CreateText(minePanel.transform, "MiningProgressText", "Mining progress --", 28, TextAnchor.MiddleCenter, Rect(0f, -108f, 560f, 60f));
-            Image miningProgressFill = CreateProgressBar(minePanel.transform, "MiningProgressBar", Rect(0f, -164f, 520f, 34f), new Color(0.72f, 0.48f, 0.22f, 1f));
-            Button startButton = CreateButton(minePanel.transform, "StartCopperMiningButton", "Start Copper Mining", Rect(-145f, -230f, 290f, 66f));
-            Button tickButton = CreateButton(minePanel.transform, "MineTickButton", "Mine Tick", Rect(165f, -230f, 220f, 66f));
+            // Panel_QuestTracker (matching Frame_04_MiningHUD)
+            GameObject questPanel = CreatePanel(canvas.transform, "Panel_QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 204f, -40f, 360f, 220f));
+            CreateText(questPanel.transform, "Text_QuestTitle", "Quest: Miner Time", 26, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -30f, 310f, 35f), GoldColor);
+            CreateText(questPanel.transform, "Text_QuestObjective", "Collect 10 Copper Ore", 22, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -65f, 310f, 30f));
+            
+            Image questFill = CreateProgressBar(questPanel.transform, "ProgressBar_QuestProgress", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 30f), GoldColor);
+            CreateText(questFill.transform.parent, "Text_ProgressBar_QuestProgress_Label", "7 / 10", 18, TextAnchor.MiddleCenter, Stretch());
+            CreateButton(questPanel.transform, "Button_ClaimReward_Disabled", "Claim", Anchored(0f, 0f, 0f, 0f, 94f, 35f, 140f, 38f));
 
-            GameObject logPanel = CreatePanel(canvas.transform, "RecentRewards", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -300f, -20f, 420f, 440f));
-            Text rewardText = CreateText(logPanel.transform, "RewardText", "Recent mining rewards", 24, TextAnchor.UpperLeft, Rect(0f, 92f, 350f, 150f), MutedTextColor);
-            Text statusText = CreateText(logPanel.transform, "StatusText", "Ready", 24, TextAnchor.UpperLeft, Rect(0f, -80f, 350f, 170f), MutedTextColor);
+            // WorldArea_Mining (matching Frame_04_MiningHUD)
+            GameObject minePanel = CreatePanel(canvas.transform, "WorldArea_Mining", SubPanelColor, Center(125f, -50f, 1010f, 690f));
+            CreateText(minePanel.transform, "Text_WorldAreaTitle", "Copper Mine", 34, TextAnchor.MiddleCenter, Rect(0f, 290f, 400f, 46f));
+            
+            GameObject playerGo = CreatePanel(minePanel.transform, "Image_Player", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 160f, 60f, 150f, 210f));
+            CreateText(playerGo.transform, "Label", "Player", 18, TextAnchor.MiddleCenter, Stretch(), MutedTextColor);
+            
+            GameObject oreGo = CreatePanel(minePanel.transform, "Image_CopperNode", new Color(0.722f, 0.451f, 0.200f, 1f), Anchored(1f, 0.5f, 1f, 0.5f, -160f, 60f, 220f, 200f));
+            CreateText(oreGo.transform, "Label", "Copper Node", 18, TextAnchor.MiddleCenter, Stretch(), TextColor);
+
+            Image miningProgressFill = CreateProgressBar(minePanel.transform, "ProgressBar_MiningProgress", Rect(0f, -100f, 420f, 42f), GoldColor);
+            Text progressText = CreateText(miningProgressFill.transform.parent, "Text_ProgressBar_MiningProgress_Label", "Mining Copper... 68%", 18, TextAnchor.MiddleCenter, Stretch());
+
+            // Manual buttons (Start Mining, Mine Tick)
+            Button startButton = CreateButton(minePanel.transform, "Button_StartCopperMining", "Start Copper Mining", Rect(-145f, -210f, 290f, 58f));
+            Button tickButton = CreateButton(minePanel.transform, "Button_MineTick", "Mine Tick", Rect(165f, -210f, 220f, 58f));
+
+            // Panel_RecentRewards (matching Frame_04_MiningHUD)
+            GameObject logPanel = CreatePanel(canvas.transform, "Panel_RecentRewards", PanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -204f, -40f, 360f, 260f));
+            CreateText(logPanel.transform, "Text_RecentRewardsTitle", "Recent Rewards", 28, TextAnchor.UpperLeft, Rect(0f, 85f, 300f, 38f));
+            CreateText(logPanel.transform, "Row_CopperOre", "+1 Copper Ore", 22, TextAnchor.UpperLeft, Rect(0f, 35f, 300f, 30f), LightGreenColor);
+            Text rewardText = CreateText(logPanel.transform, "Row_MiningXP", "+2 XP", 22, TextAnchor.UpperLeft, Rect(0f, -5f, 300f, 30f), BlueColor);
+            Text statusText = CreateText(logPanel.transform, "Text_Status", "Ready", 18, TextAnchor.UpperLeft, Rect(0f, -55f, 300f, 40f), MutedTextColor);
 
             AssignObject(view, "backToTownButton", backButton);
             AssignObject(view, "startMiningButton", startButton);
             AssignObject(view, "tickMiningButton", tickButton);
             AssignObject(view, "miningProgressFill", miningProgressFill);
-            AssignObject(view, "characterText", characterText);
+            AssignObject(view, "characterText", characterText); //satisfy serialization
             AssignObject(view, "progressText", progressText);
             AssignObject(view, "rewardText", rewardText);
             AssignObject(view, "statusText", statusText);
@@ -329,7 +446,7 @@ namespace IdleGuildDemo.Editor
             fill.type = Image.Type.Filled;
             fill.fillMethod = Image.FillMethod.Horizontal;
             fill.fillOrigin = (int)Image.OriginHorizontal.Left;
-            fill.fillAmount = 0f;
+            fill.fillAmount = 0.5f;
             return fill;
         }
 
@@ -363,7 +480,7 @@ namespace IdleGuildDemo.Editor
         {
             if (cachedFont == null)
             {
-                cachedFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+                cachedFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             }
 
             return cachedFont;
@@ -490,3 +607,4 @@ namespace IdleGuildDemo.Editor
         }
     }
 }
+
