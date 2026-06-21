@@ -46,11 +46,11 @@ namespace IdleGuildDemo.Core
         public const int MaxOfflineHours = 8;
         public const int OfflineMaxHours = MaxOfflineHours;
         public const int OfflineDemoSimulatedHours = 2;
-        public const int OfflineCombatXpPerMinute = 4;
+        public const int OfflineCombatXpPerMinute = 5;
         public const int OfflineCombatCoinsPerMinute = 1;
         public const int OfflineSlimeGooPerMinute = 1;
-        public const int OfflineMiningXpPerMinute = 2;
-        public const int OfflineCopperOrePerMinute = 1;
+        public const int OfflineMiningXpPerMinute = 3;
+        public const int OfflineCopperOrePerMinute = 2;
         public const string MainMenuSceneName = "MainMenu";
         public const string TownSceneName = "Town";
         public const string CombatSceneName = "CombatZone";
@@ -63,9 +63,11 @@ namespace IdleGuildDemo.Core
         public const string TaskMining = "mining";
         public const int CombatSlimeBaseCoins = 3;
         public const int CombatSlimeGooDropQuantity = 1;
-        public const float MiningCopperBaseDurationSeconds = 2.0f;
+        public const float MiningCopperBaseDurationSeconds = 1.5f;
         public const int MiningCopperOreRewardQuantity = 1;
         public const int MiningCopperXpReward = 2;
+        public const int ProgressionBaseXpRequired = 20;
+        public const int ProgressionXpRequiredPerLevel = 12;
         public const string WarriorClassId = "warrior";
         public const string ArcherClassId = "archer";
         public const string MageClassId = "mage";

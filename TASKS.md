@@ -401,7 +401,7 @@ Commit: Add new game reset flow
 
 ## Task 45
 
-Status: READY
+Status: DONE
 Title: Demo pacing tuning
 Commit: Tune demo pacing
 

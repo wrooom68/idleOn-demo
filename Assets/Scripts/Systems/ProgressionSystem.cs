@@ -14,7 +14,7 @@ namespace IdleGuildDemo.Systems
         public int GetXpRequiredForLevel(int level)
         {
             int safeLevel = level < 1 ? 1 : level;
-            return 25 + safeLevel * 20;
+            return GameConstants.ProgressionBaseXpRequired + safeLevel * GameConstants.ProgressionXpRequiredPerLevel;
         }
 
         public ProgressionResult AddXp(CharacterState character, int amount)
