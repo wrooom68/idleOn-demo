@@ -12,6 +12,9 @@ namespace IdleGuildDemo.Systems
         public string taskType = string.Empty;
         public string targetId = string.Empty;
         public double elapsedMinutes;
+        public int levelBefore;
+        public int levelAfter;
+        public bool leveledUp;
         public int xpGained;
         public int coinsGained;
         public List<InventoryStack> itemsGained = new List<InventoryStack>();

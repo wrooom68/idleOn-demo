@@ -323,7 +323,7 @@ Commit: Add AFK task assignment system
 
 ## Task 32
 
-Status: READY
+Status: DONE
 Title: AFK rewards integration
 Commit: Add AFK rewards integration
 

@@ -75,7 +75,6 @@ namespace IdleGuildDemo.Systems
                 summary.hasAnyRewards |= characterSummary.hadRewards;
             }
 
-            // TODO: Feed this summary into the future AFK results modal and quest progress hooks.
             return summary;
         }
 
@@ -139,21 +138,31 @@ namespace IdleGuildDemo.Systems
                 return summary;
             }
 
-            float afkMultiplier = statsSystem.CalculateStats(character).afkGainMultiplier;
+            CharacterStats stats = statsSystem.CalculateStats(character);
+            float afkMultiplier = stats.afkGainMultiplier;
             if (afkMultiplier < 0f)
             {
                 afkMultiplier = 0f;
             }
 
+            float xpMultiplier = stats.xpGainMultiplier;
+            if (xpMultiplier < 0f)
+            {
+                xpMultiplier = 0f;
+            }
+
+            summary.levelBefore = character.level;
             if (summary.taskType == GameConstants.TaskCombat && summary.targetId == GameConstants.EnemySlimeId)
             {
-                ApplyCombatRewards(profile, character, summary, elapsedMinutes, afkMultiplier);
+                ApplyCombatRewards(profile, character, summary, elapsedMinutes, afkMultiplier, xpMultiplier);
             }
             else if (summary.taskType == GameConstants.TaskMining && summary.targetId == GameConstants.ZoneMineCopperId)
             {
-                ApplyMiningRewards(character, summary, elapsedMinutes, afkMultiplier);
+                ApplyMiningRewards(character, summary, elapsedMinutes, afkMultiplier, xpMultiplier);
             }
 
+            summary.levelAfter = character.level;
+            summary.leveledUp = summary.levelAfter > summary.levelBefore;
             task.startedUtc = nowUtc.ToString("o");
             return summary;
         }
@@ -163,13 +172,14 @@ namespace IdleGuildDemo.Systems
             CharacterState character,
             CharacterAfkRewardSummary summary,
             double elapsedMinutes,
-            float afkMultiplier)
+            float afkMultiplier,
+            float xpMultiplier)
         {
-            summary.xpGained = CalculateReward(elapsedMinutes, GameConstants.OfflineCombatXpPerMinute, afkMultiplier);
+            summary.xpGained = CalculateReward(elapsedMinutes, GameConstants.OfflineCombatXpPerMinute, afkMultiplier * xpMultiplier);
             summary.coinsGained = CalculateReward(elapsedMinutes, GameConstants.OfflineCombatCoinsPerMinute, afkMultiplier);
             int slimeGoo = CalculateReward(elapsedMinutes, GameConstants.OfflineSlimeGooPerMinute, afkMultiplier);
 
-            progressionSystem.AddXp(character, summary.xpGained);
+            ProgressionResult progression = progressionSystem.AddXp(character, summary.xpGained);
             if (summary.coinsGained > 0)
             {
                 profile.coins += summary.coinsGained;
@@ -177,20 +187,24 @@ namespace IdleGuildDemo.Systems
 
             AddItemReward(summary, GameConstants.ItemSlimeGooId, slimeGoo);
             summary.hadRewards = summary.xpGained > 0 || summary.coinsGained > 0 || slimeGoo > 0;
+            RaiseEnemyKills(GameConstants.EnemySlimeId, slimeGoo);
+            RaiseLevelReached(progression);
         }
 
         private void ApplyMiningRewards(
             CharacterState character,
             CharacterAfkRewardSummary summary,
             double elapsedMinutes,
-            float afkMultiplier)
+            float afkMultiplier,
+            float xpMultiplier)
         {
-            summary.xpGained = CalculateReward(elapsedMinutes, GameConstants.OfflineMiningXpPerMinute, afkMultiplier);
+            summary.xpGained = CalculateReward(elapsedMinutes, GameConstants.OfflineMiningXpPerMinute, afkMultiplier * xpMultiplier);
             int copperOre = CalculateReward(elapsedMinutes, GameConstants.OfflineCopperOrePerMinute, afkMultiplier);
 
-            progressionSystem.AddXp(character, summary.xpGained);
+            ProgressionResult progression = progressionSystem.AddXp(character, summary.xpGained);
             AddItemReward(summary, GameConstants.ItemCopperOreId, copperOre);
             summary.hadRewards = summary.xpGained > 0 || copperOre > 0;
+            RaiseLevelReached(progression);
         }
 
         private void AddItemReward(CharacterAfkRewardSummary summary, string itemId, int quantity)
@@ -202,6 +216,23 @@ namespace IdleGuildDemo.Systems
 
             inventorySystem?.AddItem(itemId, quantity);
             summary.itemsGained.Add(new InventoryStack(itemId, quantity));
+            QuestGameplayEvents.RaiseItemCollected(itemId, quantity);
+        }
+
+        private static void RaiseEnemyKills(string enemyId, int killCount)
+        {
+            for (int i = 0; i < killCount; i++)
+            {
+                QuestGameplayEvents.RaiseEnemyKilled(enemyId);
+            }
+        }
+
+        private static void RaiseLevelReached(ProgressionResult progression)
+        {
+            if (progression != null && progression.leveledUp)
+            {
+                QuestGameplayEvents.RaiseLevelReached(progression.newLevel);
+            }
         }
 
         private static int CalculateReward(double elapsedMinutes, int perMinute, float multiplier)
