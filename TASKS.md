@@ -317,25 +317,25 @@ Commit: Add economy and reward feedback
 
 ## Task 31
 
-Status: TODO
+Status: READY
 Title: AFK task assignment system
 Commit: Add AFK task assignment system
 
 ## Task 32
 
-Status: TODO
+Status: READY
 Title: AFK rewards integration
 Commit: Add AFK rewards integration
 
 ## Task 33
 
-Status: TODO
+Status: READY
 Title: Second character task behavior
 Commit: Add second character task behavior
 
 ## Task 34
 
-Status: TODO
+Status: READY
 Title: AFK results modal integration
 Commit: Add AFK results modal integration
 
@@ -462,7 +462,7 @@ Checklist:
 
 ## Review Gate B
 
-Status: WAITING_FOR_USER_REVIEW
+Status: APPROVED
 ID: B
 After tasks: 29, 30
 Approval phrase: REVIEW DONE B
