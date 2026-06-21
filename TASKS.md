@@ -427,7 +427,7 @@ Commit: Add final handoff report
 
 ## Review Gate A
 
-Status: TODO
+Status: WAITING_FOR_USER_REVIEW
 ID: A
 After tasks: 25, 26, 27, 28
 Approval phrase: REVIEW DONE A
