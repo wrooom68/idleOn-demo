@@ -8,17 +8,21 @@ Status system:
 - `TODO` = future task.
 - `BLOCKED` = needs user input.
 - `CUT` = removed from scope.
+- `WAITING_FOR_USER_REVIEW` = review gate is waiting for user confirmation.
+- `APPROVED` = review gate approved by user.
 
 Rules:
 
 - Execute only the first task marked `READY`.
-- Never repeat tasks marked `DONE`, `REVIEW`, `BLOCKED`, `CUT`, or `TODO`.
+- Never repeat tasks marked `DONE`, `REVIEW`, `BLOCKED`, `CUT`, `TODO`, `WAITING_FOR_USER_REVIEW`, or `APPROVED`.
 - Work one task at a time.
 - Create `reports/task_<id>_report.md` after each task.
 - Update task status after each task.
 - Commit after each task using the listed commit message.
 - Stop if Unity validation, unclear scope, git conflict, or missing files are encountered.
 - Do not run Unity, Unity Hub, Unity batchmode, build commands, or licensing commands.
+- When a review gate is reached, create `reports/review_gate_<id>.md`, mark the gate `WAITING_FOR_USER_REVIEW`, commit, and stop.
+- Continue after a review gate only when the gate is marked `APPROVED` or `TASKS.md` contains `REVIEW DONE <gate_id>`.
 
 ## Task 01
 
@@ -205,44 +209,107 @@ Commit: Add gameplay controller shell
 ## Task 25
 
 Status: DONE
-Title: Quest progression system
+Title: QuestSystem event listeners and quest flow
+
+Allowed files:
+
+- `Assets/Scripts/Systems/`
+- `Assets/Scripts/Runtime/`
+- `Assets/Scripts/Data/`
+- `reports/`
+- `TASKS.md`
+
+Do not touch:
+
+- `Assets/Scenes/`
+- `Assets/ThirdParty/`
+- `Assets/Art/`
+- `CREDITS.md`
+
+Goal:
+
+Implement QuestSystem event listeners, progress updates, claim rewards, and next quest flow.
+
 Commit: Implement quest progression system
 
 ## Task 26
 
-Status: TODO
-Title: Mining activity loop
-Commit: Add mining activity loop
+Status: READY
+Title: Quest Tracker UI shell
+
+Allowed files:
+
+- `Assets/Scripts/UI/`
+- `Assets/Scripts/Systems/`
+- `reports/`
+- `TASKS.md`
+
+Do not touch:
+
+- `Assets/ThirdParty/`
+- `CREDITS.md`
+
+Goal:
+
+Implement quest tracker UI controller shell and UI-facing methods without scene/prefab changes unless already safe.
+
+Commit: Add quest tracker UI shell
 
 ## Task 27
 
-Status: TODO
-Title: Combat activity loop
-Commit: Add combat activity loop
+Status: READY
+Title: Class selection system
+
+Allowed files:
+
+- `Assets/Scripts/Systems/`
+- `Assets/Scripts/Data/`
+- `Assets/Scripts/Runtime/`
+- `reports/`
+- `TASKS.md`
+
+Goal:
+
+Implement Beginner to Warrior, Archer, Mage class selection logic and class stat modifiers.
+
+Commit: Add class selection system
 
 ## Task 28
 
-Status: TODO
-Title: Crafting activity loop
-Commit: Add crafting activity loop
+Status: READY
+Title: Talent system
+
+Allowed files:
+
+- `Assets/Scripts/Systems/`
+- `Assets/Scripts/Data/`
+- `Assets/Scripts/Runtime/`
+- `reports/`
+- `TASKS.md`
+
+Goal:
+
+Implement four-talent spend/validation/stat modifier system.
+
+Commit: Implement talent system
 
 ## Task 29
 
 Status: TODO
-Title: Quest tracking integration
-Commit: Add quest tracking integration
+Title: Class and talent UI integration
+Commit: Add class and talent UI integration
 
 ## Task 30
 
 Status: TODO
-Title: Talent unlock integration
-Commit: Add talent unlock integration
+Title: Economy and reward feedback
+Commit: Add economy and reward feedback
 
 ## Task 31
 
 Status: TODO
-Title: Class choice integration
-Commit: Add class choice integration
+Title: AFK task assignment system
+Commit: Add AFK task assignment system
 
 ## Task 32
 
@@ -253,50 +320,50 @@ Commit: Add AFK rewards integration
 ## Task 33
 
 Status: TODO
-Title: UI prefab structure
-Commit: Add UI prefab structure
+Title: Second character task behavior
+Commit: Add second character task behavior
 
 ## Task 34
 
 Status: TODO
-Title: HUD UI binding
-Commit: Add HUD UI binding
+Title: AFK results modal integration
+Commit: Add AFK results modal integration
 
 ## Task 35
+
+Status: TODO
+Title: HUD and quest tracker binding
+Commit: Add HUD and quest tracker binding
+
+## Task 36
 
 Status: TODO
 Title: Inventory UI binding
 Commit: Add inventory UI binding
 
-## Task 36
+## Task 37
 
 Status: TODO
 Title: Crafting UI binding
 Commit: Add crafting UI binding
 
-## Task 37
+## Task 38
 
 Status: TODO
 Title: Character UI binding
 Commit: Add character UI binding
 
-## Task 38
-
-Status: TODO
-Title: Talent UI binding
-Commit: Add talent UI binding
-
 ## Task 39
 
 Status: TODO
-Title: Quest UI binding
-Commit: Add quest UI binding
+Title: Town scene flow binding
+Commit: Add town scene flow binding
 
 ## Task 40
 
 Status: TODO
-Title: AFK modal UI binding
-Commit: Add AFK modal UI binding
+Title: Scene navigation and readability pass
+Commit: Add scene navigation and readability pass
 
 ## Task 41
 
@@ -357,3 +424,83 @@ Commit: Add release readiness notes
 Status: TODO
 Title: Final handoff report
 Commit: Add final handoff report
+
+## Review Gate A
+
+Status: TODO
+ID: A
+After tasks: 25, 26, 27, 28
+Approval phrase: REVIEW DONE A
+Review type: Code/system review. No visual Unity review required unless compile errors are suspected.
+
+Checklist:
+
+- Check reports for Tasks 25-28.
+- Open Unity manually only if needed.
+- Confirm no obvious script compile issues.
+- Confirm no gameplay scope creep.
+- Confirm Codex can continue to UI/economy batch.
+
+## Review Gate B
+
+Status: TODO
+ID: B
+After tasks: 29, 30
+Approval phrase: REVIEW DONE B
+Review type: Unity visual/manual review required.
+
+Checklist:
+
+- Check reports for Tasks 29-30.
+- Open Unity manually.
+- Confirm class and talent UI flows are understandable.
+- Confirm economy and reward feedback are readable.
+- Confirm Codex can continue to AFK/task systems.
+
+## Review Gate C
+
+Status: TODO
+ID: C
+After tasks: 31, 32, 33, 34
+Approval phrase: REVIEW DONE C
+Review type: Unity manual validation required for AFK and second character behavior.
+
+Checklist:
+
+- Check reports for Tasks 31-34.
+- Open Unity manually.
+- Confirm each character can have a current task.
+- Confirm AFK simulation rewards are shown and applied.
+- Confirm Character 2 behavior works after unlock.
+- Confirm Codex can continue to HUD/inventory/town/scene flow.
+
+## Review Gate D
+
+Status: TODO
+ID: D
+After tasks: 35, 36, 37, 38, 39, 40
+Approval phrase: REVIEW DONE D
+Review type: Unity visual review required.
+
+Checklist:
+
+- Check reports for Tasks 35-40.
+- Open Unity manually.
+- Confirm UI, sprites, scene navigation, missing references, and readability.
+- Confirm reviewer path is understandable without explanation.
+- Confirm Codex can continue to QA/build/docs.
+
+## Review Gate E
+
+Status: TODO
+ID: E
+After tasks: 41, 42, 43, 44, 45, 46, 47, 48, 49, 50
+Approval phrase: REVIEW DONE E
+Review type: Final QA, playtest, build, video, and submission review.
+
+Checklist:
+
+- Check reports for Tasks 41-50.
+- Confirm final QA/playtest notes are complete.
+- Confirm build/submission materials are ready.
+- Confirm README, credits, video notes, and handoff materials match `scope.md`.
