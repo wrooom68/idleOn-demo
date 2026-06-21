@@ -1,3 +1,4 @@
+using System;
 using IdleGuildDemo.Core;
 using IdleGuildDemo.Runtime;
 using IdleGuildDemo.Save;
@@ -192,7 +193,12 @@ namespace IdleGuildDemo.UI
                 return "Save found. Continue or start fresh.";
             }
 
-            return $"Save found. Last saved {saveData.lastSavedUtc}.";
+            if (DateTime.TryParse(saveData.lastSavedUtc, out DateTime lastSavedUtc))
+            {
+                return $"Save found. Last saved {lastSavedUtc.ToLocalTime():yyyy-MM-dd HH:mm}.";
+            }
+
+            return "Save found. Continue or start fresh.";
         }
 
         private void ClearResetConfirmation()

@@ -202,7 +202,7 @@ namespace IdleGuildDemo.UI
                 return;
             }
 
-            rewardText.text = $"XP +{result.xpGained}, Coins +{result.coinsGained}, {result.itemDroppedId} +{result.itemDroppedQuantity}";
+            rewardText.text = $"XP +{result.xpGained}, Coins +{result.coinsGained}, {FormatItemName(result.itemDroppedId)} +{result.itemDroppedQuantity}";
         }
 
         private void SetStatus(string message)
@@ -219,6 +219,25 @@ namespace IdleGuildDemo.UI
             if (text != null)
             {
                 text.text = value;
+            }
+        }
+
+        private static string FormatItemName(string itemId)
+        {
+            switch (itemId)
+            {
+                case GameConstants.ItemSlimeGooId:
+                    return "Slime Goo";
+                case GameConstants.ItemCopperOreId:
+                    return "Copper Ore";
+                case GameConstants.ItemCopperBarId:
+                    return "Copper Bar";
+                case GameConstants.ItemCopperSwordId:
+                    return "Copper Sword";
+                case GameConstants.ItemCopperPickaxeId:
+                    return "Copper Pickaxe";
+                default:
+                    return string.IsNullOrEmpty(itemId) ? "Item" : itemId;
             }
         }
 

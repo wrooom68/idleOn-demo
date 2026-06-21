@@ -419,7 +419,7 @@ Commit: Apply bug fix pass
 
 ## Task 48
 
-Status: READY
+Status: DONE
 Title: Polish pass
 Commit: Apply polish pass
 
