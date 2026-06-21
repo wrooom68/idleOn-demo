@@ -431,7 +431,7 @@ Commit: Add release readiness notes
 
 ## Task 50
 
-Status: READY
+Status: DONE
 Title: Final handoff report
 Commit: Add final handoff report
 
