@@ -1,3 +1,4 @@
+using IdleGuildDemo.Core;
 using IdleGuildDemo.Runtime;
 
 namespace IdleGuildDemo.Systems
@@ -7,16 +8,67 @@ namespace IdleGuildDemo.Systems
     /// </summary>
     public sealed class StatsSystem
     {
-        public float GetDamageMultiplier(CharacterState character)
+        public CharacterStats CalculateStats(CharacterState character)
         {
-            // TODO: Implement derived combat stats.
-            return 1f;
+            CharacterStats stats = new CharacterStats();
+
+            if (character == null)
+            {
+                return stats;
+            }
+
+            character.Normalize();
+            ApplyClassBonus(character.selectedClassId, stats);
+            ApplyTalentBonuses(character, stats);
+            return stats;
         }
 
-        public float GetMiningSpeedMultiplier(CharacterState character)
+        private static void ApplyClassBonus(string selectedClassId, CharacterStats stats)
         {
-            // TODO: Implement derived gathering stats.
-            return 1f;
+            switch (selectedClassId)
+            {
+                case GameConstants.WarriorClassId:
+                    stats.damage += 2;
+                    break;
+                case GameConstants.ArcherClassId:
+                    stats.dropRateMultiplier += 0.10f;
+                    break;
+                case GameConstants.MageClassId:
+                    stats.afkGainMultiplier += 0.10f;
+                    break;
+            }
+        }
+
+        private static void ApplyTalentBonuses(CharacterState character, CharacterStats stats)
+        {
+            if (character.talents == null)
+            {
+                return;
+            }
+
+            foreach (TalentState talent in character.talents)
+            {
+                if (talent == null || talent.rank <= 0)
+                {
+                    continue;
+                }
+
+                switch (talent.talentId)
+                {
+                    case GameConstants.DamageTalentId:
+                        stats.damage += talent.rank;
+                        break;
+                    case GameConstants.MiningSpeedTalentId:
+                        stats.miningSpeedMultiplier += 0.05f * talent.rank;
+                        break;
+                    case GameConstants.XpGainTalentId:
+                        stats.xpGainMultiplier += 0.05f * talent.rank;
+                        break;
+                    case GameConstants.AfkGainTalentId:
+                        stats.afkGainMultiplier += 0.05f * talent.rank;
+                        break;
+                }
+            }
         }
     }
 }

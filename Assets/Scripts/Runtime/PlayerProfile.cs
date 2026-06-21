@@ -25,12 +25,12 @@ namespace IdleGuildDemo.Runtime
                 {
                     new CharacterState
                     {
-                        id = "character_01",
+                        characterId = "character_01",
                         displayName = "Ruchir",
                         level = 1,
-                        xp = 0,
-                        classId = string.Empty,
-                        talentPoints = 0,
+                        currentXp = 0,
+                        unspentTalentPoints = 0,
+                        selectedClassId = string.Empty,
                         isUnlocked = true
                     }
                 },
@@ -60,6 +60,11 @@ namespace IdleGuildDemo.Runtime
             if (characters.Count == 0)
             {
                 characters.Add(PlayerProfile.CreateDefault().characters[0]);
+            }
+
+            foreach (CharacterState character in characters)
+            {
+                character?.Normalize();
             }
 
             if (inventory == null)
