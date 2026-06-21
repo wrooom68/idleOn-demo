@@ -6,8 +6,25 @@ namespace IdleGuildDemo.Runtime
     public sealed class TaskState
     {
         public string taskType = string.Empty;
-        public string zoneId = string.Empty;
         public string targetId = string.Empty;
-        public float progress;
+        public string startedUtc = string.Empty;
+
+        public void Normalize()
+        {
+            if (taskType == null)
+            {
+                taskType = string.Empty;
+            }
+
+            if (targetId == null)
+            {
+                targetId = string.Empty;
+            }
+
+            if (startedUtc == null)
+            {
+                startedUtc = string.Empty;
+            }
+        }
     }
 }

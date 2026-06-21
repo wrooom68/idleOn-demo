@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using IdleGuildDemo.Core;
 
 namespace IdleGuildDemo.Runtime
 {
@@ -9,6 +10,7 @@ namespace IdleGuildDemo.Runtime
         public string playerId = "local_player";
         public string displayName = "Reviewer";
         public List<CharacterState> characters = new List<CharacterState>();
+        public string activeCharacterId = GameConstants.StartingCharacterId;
         public InventoryState inventory = new InventoryState();
         public int coins;
         public List<QuestProgressState> quests = new List<QuestProgressState>();
@@ -21,18 +23,10 @@ namespace IdleGuildDemo.Runtime
                 playerId = "local_player",
                 displayName = "Reviewer",
                 coins = 0,
+                activeCharacterId = GameConstants.StartingCharacterId,
                 characters = new List<CharacterState>
                 {
-                    new CharacterState
-                    {
-                        characterId = "character_01",
-                        displayName = "Ruchir",
-                        level = 1,
-                        currentXp = 0,
-                        unspentTalentPoints = 0,
-                        selectedClassId = string.Empty,
-                        isUnlocked = true
-                    }
+                    CreateStartingCharacter()
                 },
                 inventory = new InventoryState(),
                 quests = new List<QuestProgressState>(),
@@ -57,14 +51,27 @@ namespace IdleGuildDemo.Runtime
                 characters = new List<CharacterState>();
             }
 
+            for (int i = characters.Count - 1; i >= 0; i--)
+            {
+                if (characters[i] == null)
+                {
+                    characters.RemoveAt(i);
+                }
+            }
+
             if (characters.Count == 0)
             {
-                characters.Add(PlayerProfile.CreateDefault().characters[0]);
+                characters.Add(CreateStartingCharacter());
             }
 
             foreach (CharacterState character in characters)
             {
                 character?.Normalize();
+            }
+
+            if (!HasCharacter(activeCharacterId))
+            {
+                activeCharacterId = characters[0].characterId;
             }
 
             if (inventory == null)
@@ -88,6 +95,42 @@ namespace IdleGuildDemo.Runtime
             {
                 currentQuestId = string.Empty;
             }
+        }
+
+        private bool HasCharacter(string characterId)
+        {
+            if (string.IsNullOrEmpty(characterId))
+            {
+                return false;
+            }
+
+            foreach (CharacterState character in characters)
+            {
+                if (character != null && character.characterId == characterId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static CharacterState CreateStartingCharacter()
+        {
+            return new CharacterState
+            {
+                characterId = GameConstants.StartingCharacterId,
+                displayName = "Ruchir",
+                level = 1,
+                currentXp = 0,
+                unspentTalentPoints = 0,
+                selectedClassId = string.Empty,
+                isUnlocked = true,
+                currentTask = new TaskState
+                {
+                    taskType = GameConstants.TaskIdle
+                }
+            };
         }
     }
 }

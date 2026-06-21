@@ -69,6 +69,8 @@ namespace IdleGuildDemo.Runtime
             {
                 currentTask = new TaskState();
             }
+
+            currentTask.Normalize();
         }
     }
 }

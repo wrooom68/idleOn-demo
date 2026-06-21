@@ -27,6 +27,11 @@ namespace IdleGuildDemo.Core
         public const string UnlockCharacter2QuestId = "quest.unlock_character_2";
         public const int MaxOfflineHours = 8;
         public const int ClassUnlockLevel = 5;
+        public const string StartingCharacterId = "char_001";
+        public const string SecondCharacterId = "char_002";
+        public const string TaskIdle = "idle";
+        public const string TaskCombat = "combat";
+        public const string TaskMining = "mining";
         public const string WarriorClassId = "warrior";
         public const string ArcherClassId = "archer";
         public const string MageClassId = "mage";
