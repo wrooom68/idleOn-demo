@@ -499,10 +499,11 @@ Checklist:
 
 ## Review Gate D
 
-Status: TODO
+Status: WAITING_FOR_USER_REVIEW
 ID: D
 After tasks: 35, 36, 37, 38, 39, 40
 Approval phrase: REVIEW DONE D
+Block phrase: REVIEW BLOCKED D: <short reason>
 Next batch promoted on approval: Tasks 41-50
 Review type: Unity visual review required.
 
