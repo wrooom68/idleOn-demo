@@ -377,61 +377,61 @@ Commit: Add scene navigation and readability pass
 
 ## Task 41
 
-Status: TODO
+Status: READY
 Title: Navigation UI binding
 Commit: Add navigation UI binding
 
 ## Task 42
 
-Status: TODO
+Status: READY
 Title: Main menu flow
 Commit: Add main menu flow
 
 ## Task 43
 
-Status: TODO
+Status: READY
 Title: Save and continue flow
 Commit: Add save and continue flow
 
 ## Task 44
 
-Status: TODO
+Status: READY
 Title: New game reset flow
 Commit: Add new game reset flow
 
 ## Task 45
 
-Status: TODO
+Status: READY
 Title: Demo pacing tuning
 Commit: Tune demo pacing
 
 ## Task 46
 
-Status: TODO
+Status: READY
 Title: Manual QA checklist
 Commit: Add manual QA checklist
 
 ## Task 47
 
-Status: TODO
+Status: READY
 Title: Bug fix pass
 Commit: Apply bug fix pass
 
 ## Task 48
 
-Status: TODO
+Status: READY
 Title: Polish pass
 Commit: Apply polish pass
 
 ## Task 49
 
-Status: TODO
+Status: READY
 Title: Release readiness notes
 Commit: Add release readiness notes
 
 ## Task 50
 
-Status: TODO
+Status: READY
 Title: Final handoff report
 Commit: Add final handoff report
 
@@ -499,7 +499,7 @@ Checklist:
 
 ## Review Gate D
 
-Status: WAITING_FOR_USER_REVIEW
+Status: APPROVED
 ID: D
 After tasks: 35, 36, 37, 38, 39, 40
 Approval phrase: REVIEW DONE D
