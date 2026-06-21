@@ -32,11 +32,17 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Image questProgressFill;
         [SerializeField] private QuestTrackerView questTrackerView;
         [SerializeField] private Text statusText;
+        [SerializeField] private HUDView hudView;
+        [SerializeField] private InventoryPanel inventoryPanel;
+        [SerializeField] private CraftingPanel craftingPanel;
+        [SerializeField] private CharacterPanel characterPanel;
         [SerializeField] private InventoryCraftingPanel inventoryCraftingPanel;
         [SerializeField] private CharacterProgressionPanel characterProgressionPanel;
         [SerializeField] private AfkResultsModal afkResultsModal;
         [SerializeField] private LootLogView lootLogView;
         [SerializeField] private ToastView toastView;
+        [SerializeField] private ItemDefinition[] itemDefinitions;
+        [SerializeField] private RecipeDefinition[] recipeDefinitions;
         [SerializeField] private QuestDefinition[] questDefinitions;
 
         private void OnEnable()
@@ -134,6 +140,7 @@ namespace IdleGuildDemo.UI
             SetText(taskText, GetTaskLabel(character.currentTask));
             SetText(coinsText, GetCurrencyAndInventoryLabel(services));
             SetText(inventoryText, GetInventoryLabel(services));
+            RefreshBoundPanels(services);
             RefreshQuest(services);
         }
 
@@ -149,6 +156,20 @@ namespace IdleGuildDemo.UI
 
         public void OpenInventory()
         {
+            if (inventoryPanel != null)
+            {
+                if (!TryGetServices(out ServiceRegistry services))
+                {
+                    SetStatus("Runtime is not ready.");
+                    return;
+                }
+
+                inventoryPanel.RefreshFromServices(services, itemDefinitions);
+                inventoryPanel.Show();
+                SetStatus("Inventory opened.");
+                return;
+            }
+
             if (inventoryCraftingPanel != null)
             {
                 inventoryCraftingPanel.Show();
@@ -161,6 +182,20 @@ namespace IdleGuildDemo.UI
 
         public void OpenCharacterPanel()
         {
+            if (characterPanel != null)
+            {
+                if (!TryGetServices(out ServiceRegistry services))
+                {
+                    SetStatus("Runtime is not ready.");
+                    return;
+                }
+
+                characterPanel.RefreshFromServices(services);
+                characterPanel.Show();
+                SetStatus("Character roster opened.");
+                return;
+            }
+
             if (characterProgressionPanel != null)
             {
                 characterProgressionPanel.Show();
@@ -216,6 +251,46 @@ namespace IdleGuildDemo.UI
                 : "Quest claimed.";
             SetStatus(message);
             Refresh();
+        }
+
+        public void OpenCrafting()
+        {
+            if (!TryGetServices(out ServiceRegistry services))
+            {
+                SetStatus("Runtime is not ready.");
+                return;
+            }
+
+            if (craftingPanel != null)
+            {
+                craftingPanel.Bind(services.CraftingSystem, recipeDefinitions, itemDefinitions);
+                craftingPanel.Show();
+                SetStatus("Crafting opened.");
+                return;
+            }
+
+            OpenInventory();
+        }
+
+        public void OpenCharacterProgression()
+        {
+            if (characterProgressionPanel != null)
+            {
+                characterProgressionPanel.Show();
+                SetStatus("Character progression opened.");
+                return;
+            }
+
+            OpenCharacterPanel();
+        }
+
+        private void RefreshBoundPanels(ServiceRegistry services)
+        {
+            hudView?.RefreshFromServices(services, "Town");
+            hudView?.RefreshQuest(services.QuestSystem, questDefinitions, services.PlayerProfile);
+            inventoryPanel?.RefreshFromServices(services, itemDefinitions);
+            craftingPanel?.Bind(services.CraftingSystem, recipeDefinitions, itemDefinitions);
+            characterPanel?.RefreshFromServices(services);
         }
 
         private static string GetInventoryLabel(ServiceRegistry services)

@@ -365,7 +365,7 @@ Commit: Add character UI binding
 
 ## Task 39
 
-Status: READY
+Status: DONE
 Title: Town scene flow binding
 Commit: Add town scene flow binding
 
