@@ -12,12 +12,14 @@ namespace IdleGuildDemo.Core
         public const string CopperSwordItemId = "item.copper_sword";
         public const string CopperPickaxeItemId = "item.copper_pickaxe";
         public const string SlimeEnemyId = "enemy.slime";
+        public const string ItemCopperOreId = CopperOreItemId;
         public const string ItemCoinsId = CoinItemId;
         public const string ItemSlimeGooId = SlimeGooItemId;
         public const string EnemySlimeId = SlimeEnemyId;
         public const string TownZoneId = "zone.town";
         public const string SlimeCombatZoneId = "zone.combat_slimes";
         public const string CopperMineZoneId = "zone.mine_copper";
+        public const string ZoneMineCopperId = CopperMineZoneId;
         public const string CopperBarRecipeId = "recipe.copper_bar";
         public const string CopperSwordRecipeId = "recipe.copper_sword";
         public const string CopperPickaxeRecipeId = "recipe.copper_pickaxe";
@@ -37,6 +39,9 @@ namespace IdleGuildDemo.Core
         public const string TaskMining = "mining";
         public const int CombatSlimeBaseCoins = 3;
         public const int CombatSlimeGooDropQuantity = 1;
+        public const float MiningCopperBaseDurationSeconds = 2.0f;
+        public const int MiningCopperOreRewardQuantity = 1;
+        public const int MiningCopperXpReward = 2;
         public const string WarriorClassId = "warrior";
         public const string ArcherClassId = "archer";
         public const string MageClassId = "mage";
