@@ -341,37 +341,37 @@ Commit: Add AFK results modal integration
 
 ## Task 35
 
-Status: TODO
+Status: READY
 Title: HUD and quest tracker binding
 Commit: Add HUD and quest tracker binding
 
 ## Task 36
 
-Status: TODO
+Status: READY
 Title: Inventory UI binding
 Commit: Add inventory UI binding
 
 ## Task 37
 
-Status: TODO
+Status: READY
 Title: Crafting UI binding
 Commit: Add crafting UI binding
 
 ## Task 38
 
-Status: TODO
+Status: READY
 Title: Character UI binding
 Commit: Add character UI binding
 
 ## Task 39
 
-Status: TODO
+Status: READY
 Title: Town scene flow binding
 Commit: Add town scene flow binding
 
 ## Task 40
 
-Status: TODO
+Status: READY
 Title: Scene navigation and readability pass
 Commit: Add scene navigation and readability pass
 
@@ -480,7 +480,7 @@ Checklist:
 
 ## Review Gate C
 
-Status: WAITING_FOR_USER_REVIEW
+Status: APPROVED
 ID: C
 After tasks: 31, 32, 33, 34
 Approval phrase: REVIEW DONE C
