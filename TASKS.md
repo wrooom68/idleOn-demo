@@ -425,7 +425,7 @@ Commit: Apply polish pass
 
 ## Task 49
 
-Status: READY
+Status: DONE
 Title: Release readiness notes
 Commit: Add release readiness notes
 
