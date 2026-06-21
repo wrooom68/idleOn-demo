@@ -12,6 +12,25 @@ namespace IdleGuildDemo.Core
     {
         [SerializeField] private bool dontDestroyOnLoad = true;
 
+        public static bool EnsureInitialized()
+        {
+            if (ServiceRegistry.Instance.IsInitialized)
+            {
+                return true;
+            }
+
+            GameBootstrap existingBootstrap = FindObjectOfType<GameBootstrap>();
+            if (existingBootstrap == null)
+            {
+                var bootstrapObject = new GameObject("GameBootstrap");
+                bootstrapObject.AddComponent<GameBootstrap>();
+                return ServiceRegistry.Instance.IsInitialized;
+            }
+
+            Debug.LogError("GameBootstrap exists but ServiceRegistry is not initialized.");
+            return false;
+        }
+
         private void Awake()
         {
             if (ServiceRegistry.Instance.IsInitialized)

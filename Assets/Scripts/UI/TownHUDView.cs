@@ -19,8 +19,10 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Button simulateAfkButton;
         [SerializeField] private Text activeCharacterText;
         [SerializeField] private Text levelText;
+        [SerializeField] private Text xpText;
         [SerializeField] private Text taskText;
         [SerializeField] private Text coinsText;
+        [SerializeField] private Text inventoryText;
         [SerializeField] private Text statusText;
 
         private void OnEnable()
@@ -98,9 +100,11 @@ namespace IdleGuildDemo.UI
 
             character.Normalize();
             SetText(activeCharacterText, character.displayName);
-            SetText(levelText, $"Level {character.level}");
+            SetText(levelText, $"Level {character.level} | XP {character.currentXp}");
+            SetText(xpText, $"XP {character.currentXp}");
             SetText(taskText, GetTaskLabel(character.currentTask));
-            SetText(coinsText, $"Coins {services.PlayerProfile.coins}");
+            SetText(coinsText, GetCurrencyAndInventoryLabel(services));
+            SetText(inventoryText, GetInventoryLabel(services));
         }
 
         public void GoToCombat()
@@ -139,6 +143,20 @@ namespace IdleGuildDemo.UI
             Refresh();
         }
 
+        private static string GetInventoryLabel(ServiceRegistry services)
+        {
+            int slimeGoo = services.InventorySystem.GetQuantity(GameConstants.ItemSlimeGooId);
+            int copperOre = services.InventorySystem.GetQuantity(GameConstants.ItemCopperOreId);
+            return $"Inventory: Slime Goo {slimeGoo}, Copper Ore {copperOre}";
+        }
+
+        private static string GetCurrencyAndInventoryLabel(ServiceRegistry services)
+        {
+            int slimeGoo = services.InventorySystem.GetQuantity(GameConstants.ItemSlimeGooId);
+            int copperOre = services.InventorySystem.GetQuantity(GameConstants.ItemCopperOreId);
+            return $"Coins {services.PlayerProfile.coins} | Slime Goo {slimeGoo} | Copper Ore {copperOre}";
+        }
+
         private static string GetTaskLabel(TaskState task)
         {
             if (task == null || string.IsNullOrEmpty(task.taskType) || task.taskType == GameConstants.TaskIdle)
@@ -166,7 +184,13 @@ namespace IdleGuildDemo.UI
 
         private static bool TryGetServices(out ServiceRegistry services)
         {
+            GameBootstrap.EnsureInitialized();
             services = ServiceRegistry.Instance;
+            if (!services.IsInitialized)
+            {
+                Debug.LogError("ServiceRegistry is not initialized. Add GameBootstrap to the scene.");
+            }
+
             return services.IsInitialized;
         }
     }

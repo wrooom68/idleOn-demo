@@ -124,6 +124,11 @@ namespace IdleGuildDemo.UI
             }
 
             CombatTickResult result = services.CombatSystem.Attack(character, enemyState, slimeDefinition);
+            if (result.enemyDefeated && result.coinsGained > 0)
+            {
+                services.PlayerProfile.coins += result.coinsGained;
+            }
+
             if (!string.IsNullOrEmpty(result.failureReason))
             {
                 SetStatus(result.failureReason);
@@ -149,7 +154,7 @@ namespace IdleGuildDemo.UI
             CharacterState character = services.CharacterRosterSystem.GetActiveCharacter();
             if (character != null)
             {
-                SetText(characterText, $"{character.displayName} L{character.level}");
+                SetText(characterText, $"{character.displayName} L{character.level} XP {character.currentXp}");
             }
 
             string enemyName = slimeDefinition != null && !string.IsNullOrEmpty(slimeDefinition.DisplayName)
@@ -197,7 +202,13 @@ namespace IdleGuildDemo.UI
 
         private static bool TryGetServices(out ServiceRegistry services)
         {
+            GameBootstrap.EnsureInitialized();
             services = ServiceRegistry.Instance;
+            if (!services.IsInitialized)
+            {
+                Debug.LogError("ServiceRegistry is not initialized. Add GameBootstrap to the scene.");
+            }
+
             return services.IsInitialized;
         }
     }

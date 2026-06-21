@@ -61,6 +61,7 @@ namespace IdleGuildDemo.UI
         public void NewGame()
         {
             SaveSystem saveSystem = GetSaveSystem();
+            saveSystem.DeleteSave();
             SaveData saveData = SaveData.CreateNew();
             saveSystem.Save(saveData);
             RegisterRuntime(saveSystem, saveData);
@@ -121,6 +122,7 @@ namespace IdleGuildDemo.UI
 
         private static SaveSystem GetSaveSystem()
         {
+            GameBootstrap.EnsureInitialized();
             return ServiceRegistry.Instance.IsInitialized
                 ? ServiceRegistry.Instance.SaveSystem
                 : new SaveSystem();
