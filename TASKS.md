@@ -517,10 +517,11 @@ Checklist:
 
 ## Review Gate E
 
-Status: TODO
+Status: WAITING_FOR_USER_REVIEW
 ID: E
 After tasks: 41, 42, 43, 44, 45, 46, 47, 48, 49, 50
 Approval phrase: REVIEW DONE E
+Block phrase: REVIEW BLOCKED E: <short reason>
 Next batch promoted on approval: none
 This is final submission review.
 Review type: Final QA, playtest, build, video, and submission review.
