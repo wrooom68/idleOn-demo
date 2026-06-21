@@ -30,6 +30,7 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Text questObjectiveText;
         [SerializeField] private Text questProgressText;
         [SerializeField] private Image questProgressFill;
+        [SerializeField] private QuestTrackerView questTrackerView;
         [SerializeField] private Text statusText;
         [SerializeField] private InventoryCraftingPanel inventoryCraftingPanel;
         [SerializeField] private CharacterProgressionPanel characterProgressionPanel;
@@ -249,6 +250,7 @@ namespace IdleGuildDemo.UI
             QuestDefinition quest = services.QuestSystem.GetCurrentQuest(questDefinitions);
             if (quest == null)
             {
+                questTrackerView?.SetComplete();
                 SetText(questTitleText, "Quest Chain Complete");
                 SetText(questObjectiveText, "All tutorial quests are complete.");
                 SetText(questProgressText, string.Empty);
@@ -266,6 +268,7 @@ namespace IdleGuildDemo.UI
             }
 
             bool canClaim = services.QuestSystem.CanClaimCurrentQuest(questDefinitions);
+            questTrackerView?.SetQuest(quest, services.PlayerProfile.questProgress, canClaim);
             SetText(questTitleText, quest.DisplayName);
             SetText(questObjectiveText, GetQuestObjectiveLabel(quest));
             SetText(questProgressText, $"{current}/{required}");

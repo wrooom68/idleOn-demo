@@ -341,7 +341,7 @@ Commit: Add AFK results modal integration
 
 ## Task 35
 
-Status: READY
+Status: DONE
 Title: HUD and quest tracker binding
 Commit: Add HUD and quest tracker binding
 
