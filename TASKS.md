@@ -234,7 +234,7 @@ Commit: Implement quest progression system
 
 ## Task 26
 
-Status: READY
+Status: DONE
 Title: Quest Tracker UI shell
 
 Allowed files:
