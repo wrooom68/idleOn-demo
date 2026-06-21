@@ -317,7 +317,7 @@ Commit: Add economy and reward feedback
 
 ## Task 31
 
-Status: READY
+Status: DONE
 Title: AFK task assignment system
 Commit: Add AFK task assignment system
 

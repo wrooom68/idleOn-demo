@@ -100,20 +100,104 @@ namespace IdleGuildDemo.Systems
             return character != null && character.isUnlocked;
         }
 
-        public void AssignTask(string characterId, string taskType, string targetId)
+        public TaskAssignmentResult AssignIdle(string characterId)
         {
+            return AssignTask(characterId, GameConstants.TaskIdle, string.Empty);
+        }
+
+        public TaskAssignmentResult AssignSlimeCombat(string characterId)
+        {
+            return AssignTask(characterId, GameConstants.TaskCombat, GameConstants.EnemySlimeId);
+        }
+
+        public TaskAssignmentResult AssignCopperMining(string characterId)
+        {
+            return AssignTask(characterId, GameConstants.TaskMining, GameConstants.ZoneMineCopperId);
+        }
+
+        public TaskAssignmentResult AssignTask(string characterId, string taskType, string targetId)
+        {
+            TaskAssignmentResult result = new TaskAssignmentResult
+            {
+                characterId = characterId ?? string.Empty,
+                taskType = string.IsNullOrEmpty(taskType) ? GameConstants.TaskIdle : taskType,
+                targetId = targetId ?? string.Empty
+            };
+
             CharacterState character = GetCharacterById(characterId);
             if (character == null)
             {
-                return;
+                result.failureReason = "Character is missing.";
+                return result;
             }
 
+            character.Normalize();
+            if (!character.isUnlocked)
+            {
+                result.failureReason = "Character is locked.";
+                return result;
+            }
+
+            if (!IsValidTask(result.taskType, result.targetId))
+            {
+                result.failureReason = "Task is not available.";
+                return result;
+            }
+
+            TaskState previousTask = character.currentTask ?? new TaskState();
+            previousTask.Normalize();
+            result.previousTaskType = previousTask.taskType;
+            result.previousTargetId = previousTask.targetId;
+
+            string startedUtc = DateTime.UtcNow.ToString("o");
+            result.startedUtc = startedUtc;
             character.currentTask = new TaskState
             {
-                taskType = string.IsNullOrEmpty(taskType) ? GameConstants.TaskIdle : taskType,
-                targetId = targetId ?? string.Empty,
-                startedUtc = DateTime.UtcNow.ToString("o")
+                taskType = result.taskType,
+                targetId = GetNormalizedTarget(result.taskType, result.targetId),
+                startedUtc = startedUtc
             };
+            result.targetId = character.currentTask.targetId;
+            result.success = true;
+            return result;
+        }
+
+        public bool CanAssignTask(string characterId, string taskType, string targetId)
+        {
+            CharacterState character = GetCharacterById(characterId);
+            return character != null
+                && character.isUnlocked
+                && IsValidTask(string.IsNullOrEmpty(taskType) ? GameConstants.TaskIdle : taskType, targetId);
+        }
+
+        public static bool IsValidTask(string taskType, string targetId)
+        {
+            if (string.IsNullOrEmpty(taskType) || taskType == GameConstants.TaskIdle)
+            {
+                return true;
+            }
+
+            if (taskType == GameConstants.TaskCombat)
+            {
+                return targetId == GameConstants.EnemySlimeId;
+            }
+
+            if (taskType == GameConstants.TaskMining)
+            {
+                return targetId == GameConstants.ZoneMineCopperId;
+            }
+
+            return false;
+        }
+
+        private static string GetNormalizedTarget(string taskType, string targetId)
+        {
+            if (string.IsNullOrEmpty(taskType) || taskType == GameConstants.TaskIdle)
+            {
+                return string.Empty;
+            }
+
+            return targetId ?? string.Empty;
         }
     }
 }
