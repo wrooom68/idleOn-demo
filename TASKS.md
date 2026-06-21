@@ -204,9 +204,9 @@ Commit: Add gameplay controller shell
 
 ## Task 25
 
-Status: READY
-Title: Town activity loop
-Commit: Add town activity loop
+Status: DONE
+Title: Quest progression system
+Commit: Implement quest progression system
 
 ## Task 26
 
