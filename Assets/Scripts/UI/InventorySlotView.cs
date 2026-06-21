@@ -8,6 +8,7 @@ namespace IdleGuildDemo.UI
     [SerializeField] private Image iconImage;
     [SerializeField] private Text quantityText;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private Text nameText;
 
     public void SetEmpty()
     {
@@ -19,6 +20,11 @@ namespace IdleGuildDemo.UI
       if (quantityText != null)
       {
         quantityText.text = string.Empty;
+      }
+
+      if (nameText != null)
+      {
+        nameText.text = string.Empty;
       }
     }
 
@@ -33,6 +39,11 @@ namespace IdleGuildDemo.UI
       if (quantityText != null)
       {
         quantityText.text = quantity > 1 ? quantity.ToString() : string.Empty;
+      }
+
+      if (nameText != null)
+      {
+        nameText.text = displayName;
       }
 
       name = displayName;

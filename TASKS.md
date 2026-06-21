@@ -347,7 +347,7 @@ Commit: Add HUD and quest tracker binding
 
 ## Task 36
 
-Status: READY
+Status: DONE
 Title: Inventory UI binding
 Commit: Add inventory UI binding
 
