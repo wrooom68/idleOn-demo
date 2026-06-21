@@ -44,6 +44,13 @@ namespace IdleGuildDemo.Core
         public const string QuestChooseClassId = ChooseClassQuestId;
         public const string QuestUnlockCharacter2Id = UnlockCharacter2QuestId;
         public const int MaxOfflineHours = 8;
+        public const int OfflineMaxHours = MaxOfflineHours;
+        public const int OfflineDemoSimulatedHours = 2;
+        public const int OfflineCombatXpPerMinute = 4;
+        public const int OfflineCombatCoinsPerMinute = 1;
+        public const int OfflineSlimeGooPerMinute = 1;
+        public const int OfflineMiningXpPerMinute = 2;
+        public const int OfflineCopperOrePerMinute = 1;
         public const int ClassUnlockLevel = 5;
         public const string StartingCharacterId = "char_001";
         public const string SecondCharacterId = "char_002";
