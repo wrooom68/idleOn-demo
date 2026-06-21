@@ -11,6 +11,12 @@ namespace IdleGuildDemo.UI
     [SerializeField] private Image resultIcon;
 
     public Button CraftButton => craftButton;
+    public string RecipeId { get; private set; }
+
+    public void SetRecipeId(string recipeId)
+    {
+      RecipeId = recipeId ?? string.Empty;
+    }
 
     public void SetRecipe(string recipeName, string materialsSummary, Sprite resultSprite, bool canCraft)
     {
@@ -34,6 +40,17 @@ namespace IdleGuildDemo.UI
       {
         craftButton.interactable = canCraft;
       }
+    }
+
+    public void BindCraft(System.Action<string> handler)
+    {
+      if (craftButton == null)
+      {
+        return;
+      }
+
+      craftButton.onClick.RemoveAllListeners();
+      craftButton.onClick.AddListener(() => handler?.Invoke(RecipeId));
     }
   }
 }

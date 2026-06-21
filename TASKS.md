@@ -353,7 +353,7 @@ Commit: Add inventory UI binding
 
 ## Task 37
 
-Status: READY
+Status: DONE
 Title: Crafting UI binding
 Commit: Add crafting UI binding
 
