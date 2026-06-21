@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IdleGuild.UI
+namespace IdleGuildDemo.UI
 {
   /// Wires navigation-bar button clicks to UIRootController at runtime.
   public class UIWiring : MonoBehaviour

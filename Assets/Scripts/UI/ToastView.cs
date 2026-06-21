@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IdleGuild.UI
+namespace IdleGuildDemo.UI
 {
   public class ToastView : MonoBehaviour
   {

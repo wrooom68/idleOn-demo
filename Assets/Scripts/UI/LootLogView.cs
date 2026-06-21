@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IdleGuild.UI
+namespace IdleGuildDemo.UI
 {
   public class LootLogView : MonoBehaviour
   {

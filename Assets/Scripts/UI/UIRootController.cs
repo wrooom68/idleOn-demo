@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IdleGuild.UI
+namespace IdleGuildDemo.UI
 {
     /// Routes navigation-bar clicks to panels. Does not own gameplay rules.
     public class UIRootController : MonoBehaviour

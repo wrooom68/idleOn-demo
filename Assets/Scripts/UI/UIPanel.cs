@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IdleGuild.UI
+namespace IdleGuildDemo.UI
 {
     /// Thin panel wrapper — visibility only; gameplay logic stays in Systems.
     public class UIPanel : MonoBehaviour
