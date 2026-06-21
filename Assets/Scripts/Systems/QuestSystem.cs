@@ -10,7 +10,7 @@ namespace IdleGuildDemo.Systems
         public string GetCurrentQuest(SaveData saveData)
         {
             // TODO: Return the active quest id after quest flow is implemented.
-            return saveData != null ? saveData.currentQuestId : string.Empty;
+            return saveData != null && saveData.profile != null ? saveData.profile.currentQuestId : string.Empty;
         }
     }
 }

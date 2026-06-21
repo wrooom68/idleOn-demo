@@ -1,22 +1,50 @@
+using System;
 using IdleGuildDemo.Runtime;
+using UnityEngine;
 
 namespace IdleGuildDemo.Save
 {
     /// <summary>
-    /// Placeholder for future JSON serialization and deserialization.
+    /// Converts save data to and from Unity JsonUtility JSON.
     /// </summary>
     public sealed class JsonSaveSerializer
     {
-        public string ToJson(SaveData saveData)
+        public string ToJson(SaveData data, bool prettyPrint = true)
         {
-            // TODO: Serialize with Unity JsonUtility or another approved serializer.
-            return string.Empty;
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            data.Normalize();
+            return JsonUtility.ToJson(data, prettyPrint);
         }
 
+        /// <summary>
+        /// Returns null when JSON is empty or invalid so callers can decide how to recover.
+        /// </summary>
         public SaveData FromJson(string json)
         {
-            // TODO: Deserialize JSON into SaveData after save schema is finalized.
-            return new SaveData();
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return null;
+            }
+
+            try
+            {
+                var data = JsonUtility.FromJson<SaveData>(json);
+                if (data != null)
+                {
+                    data.Normalize();
+                }
+
+                return data;
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning($"Failed to deserialize save data: {exception.Message}");
+                return null;
+            }
         }
     }
 }
