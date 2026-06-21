@@ -8,6 +8,8 @@ namespace IdleGuildDemo.Systems
     /// </summary>
     public sealed class ProgressionSystem
     {
+        private readonly ClassSelectionSystem classSelectionSystem = new ClassSelectionSystem();
+
         public int GetXpRequiredForLevel(int level)
         {
             int safeLevel = level < 1 ? 1 : level;
@@ -51,61 +53,22 @@ namespace IdleGuildDemo.Systems
 
         public bool CanChooseClass(CharacterState character)
         {
-            return character != null
-                && character.level >= GameConstants.ClassUnlockLevel
-                && !HasChosenClass(character);
+            return classSelectionSystem.CanChooseClass(character);
         }
 
         public bool HasChosenClass(CharacterState character)
         {
-            return character != null && !string.IsNullOrEmpty(character.selectedClassId);
+            return classSelectionSystem.HasChosenSpecializedClass(character);
         }
 
         public bool IsValidClassId(string classId)
         {
-            return classId == GameConstants.WarriorClassId
-                || classId == GameConstants.ArcherClassId
-                || classId == GameConstants.MageClassId;
+            return classSelectionSystem.IsSpecializedClassId(classId);
         }
 
         public ClassSelectionResult ChooseClass(CharacterState character, string classId)
         {
-            ClassSelectionResult result = new ClassSelectionResult
-            {
-                selectedClassId = classId ?? string.Empty
-            };
-
-            if (character == null)
-            {
-                result.failureReason = "Character is missing.";
-                return result;
-            }
-
-            character.Normalize();
-
-            if (!IsValidClassId(classId))
-            {
-                result.failureReason = "Invalid class ID.";
-                return result;
-            }
-
-            if (character.level < GameConstants.ClassUnlockLevel)
-            {
-                result.failureReason = "Class choice unlocks at level 5.";
-                return result;
-            }
-
-            if (HasChosenClass(character))
-            {
-                result.failureReason = "Class has already been chosen.";
-                result.selectedClassId = character.selectedClassId;
-                return result;
-            }
-
-            character.selectedClassId = classId;
-            result.success = true;
-            result.selectedClassId = classId;
-            return result;
+            return classSelectionSystem.ChooseClass(character, classId);
         }
 
         public bool IsValidTalentId(string talentId)

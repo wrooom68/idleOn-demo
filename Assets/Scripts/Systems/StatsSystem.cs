@@ -8,6 +8,8 @@ namespace IdleGuildDemo.Systems
     /// </summary>
     public sealed class StatsSystem
     {
+        private readonly ClassSelectionSystem classSelectionSystem = new ClassSelectionSystem();
+
         public CharacterStats CalculateStats(CharacterState character)
         {
             CharacterStats stats = new CharacterStats();
@@ -18,25 +20,9 @@ namespace IdleGuildDemo.Systems
             }
 
             character.Normalize();
-            ApplyClassBonus(character.selectedClassId, stats);
+            classSelectionSystem.ApplyClassModifiers(character, stats);
             ApplyTalentBonuses(character, stats);
             return stats;
-        }
-
-        private static void ApplyClassBonus(string selectedClassId, CharacterStats stats)
-        {
-            switch (selectedClassId)
-            {
-                case GameConstants.WarriorClassId:
-                    stats.damage += 2;
-                    break;
-                case GameConstants.ArcherClassId:
-                    stats.dropRateMultiplier += 0.10f;
-                    break;
-                case GameConstants.MageClassId:
-                    stats.afkGainMultiplier += 0.10f;
-                    break;
-            }
         }
 
         private static void ApplyTalentBonuses(CharacterState character, CharacterStats stats)

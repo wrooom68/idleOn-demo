@@ -257,7 +257,7 @@ Commit: Add quest tracker UI shell
 
 ## Task 27
 
-Status: READY
+Status: DONE
 Title: Class selection system
 
 Allowed files:
