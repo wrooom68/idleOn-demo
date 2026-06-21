@@ -1,4 +1,5 @@
 using IdleGuildDemo.Core;
+using IdleGuildDemo.Data;
 using IdleGuildDemo.Runtime;
 using IdleGuildDemo.Systems;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Text rewardText;
         [SerializeField] private Text statusText;
         [SerializeField] private float manualTickSeconds = 2f;
+        [SerializeField] private ToastView toastView;
+        [SerializeField] private QuestDefinition[] questDefinitions;
 
         private GatheringState gatheringState;
 
@@ -127,13 +130,28 @@ namespace IdleGuildDemo.UI
                 gatheringState,
                 deltaSeconds);
 
+            QuestUpdateResult questResult = null;
+            if (result.completed)
+            {
+                questResult = services.QuestSystem.ReportItemCollected(
+                    GameConstants.ItemCopperOreId,
+                    result.itemGainedQuantity,
+                    questDefinitions);
+            }
+
             if (!string.IsNullOrEmpty(result.failureReason))
             {
                 SetStatus(result.failureReason);
             }
             else
             {
-                SetStatus(result.completed ? "Copper ore gathered." : "Mining progressed.");
+                string message = result.completed ? "Copper ore gathered." : "Mining progressed.";
+                if (questResult != null && questResult.completed)
+                {
+                    message += " Quest complete.";
+                }
+
+                SetStatus(message);
             }
 
             SetRewardText(result);
@@ -180,6 +198,10 @@ namespace IdleGuildDemo.UI
         private void SetStatus(string message)
         {
             SetText(statusText, message);
+            if (!string.IsNullOrEmpty(message))
+            {
+                toastView?.Show(message);
+            }
         }
 
         private static void SetText(Text text, string value)

@@ -22,6 +22,8 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Text enemyText;
         [SerializeField] private Text rewardText;
         [SerializeField] private Text statusText;
+        [SerializeField] private ToastView toastView;
+        [SerializeField] private QuestDefinition[] questDefinitions;
 
         private CombatEnemyState enemyState;
 
@@ -133,13 +135,25 @@ namespace IdleGuildDemo.UI
                 services.PlayerProfile.coins += result.coinsGained;
             }
 
+            QuestUpdateResult questResult = null;
+            if (result.enemyDefeated)
+            {
+                questResult = services.QuestSystem.ReportKill(GameConstants.EnemySlimeId, questDefinitions);
+            }
+
             if (!string.IsNullOrEmpty(result.failureReason))
             {
                 SetStatus(result.failureReason);
             }
             else
             {
-                SetStatus(result.enemyDefeated ? "Slime defeated." : $"Hit for {result.damageDealt}.");
+                string message = result.enemyDefeated ? "Slime defeated." : $"Hit for {result.damageDealt}.";
+                if (questResult != null && questResult.completed)
+                {
+                    message += " Quest complete.";
+                }
+
+                SetStatus(message);
             }
 
             SetRewardText(result);
@@ -194,6 +208,10 @@ namespace IdleGuildDemo.UI
         private void SetStatus(string message)
         {
             SetText(statusText, message);
+            if (!string.IsNullOrEmpty(message))
+            {
+                toastView?.Show(message);
+            }
         }
 
         private static void SetText(Text text, string value)

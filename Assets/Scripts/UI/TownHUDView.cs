@@ -1,6 +1,8 @@
 using System;
 using IdleGuildDemo.Core;
+using IdleGuildDemo.Data;
 using IdleGuildDemo.Runtime;
+using IdleGuildDemo.Systems;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,13 +19,23 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Button combatButton;
         [SerializeField] private Button miningButton;
         [SerializeField] private Button simulateAfkButton;
+        [SerializeField] private Button claimQuestButton;
         [SerializeField] private Text activeCharacterText;
         [SerializeField] private Text levelText;
         [SerializeField] private Text xpText;
         [SerializeField] private Text taskText;
         [SerializeField] private Text coinsText;
         [SerializeField] private Text inventoryText;
+        [SerializeField] private Text questTitleText;
+        [SerializeField] private Text questObjectiveText;
+        [SerializeField] private Text questProgressText;
+        [SerializeField] private Image questProgressFill;
         [SerializeField] private Text statusText;
+        [SerializeField] private InventoryCraftingPanel inventoryCraftingPanel;
+        [SerializeField] private CharacterProgressionPanel characterProgressionPanel;
+        [SerializeField] private AfkResultsModal afkResultsModal;
+        [SerializeField] private ToastView toastView;
+        [SerializeField] private QuestDefinition[] questDefinitions;
 
         private void OnEnable()
         {
@@ -52,6 +64,11 @@ namespace IdleGuildDemo.UI
             if (simulateAfkButton != null)
             {
                 simulateAfkButton.onClick.AddListener(SimulateAfkTwoHours);
+            }
+
+            if (claimQuestButton != null)
+            {
+                claimQuestButton.onClick.AddListener(ClaimQuestReward);
             }
 
             Refresh();
@@ -85,6 +102,11 @@ namespace IdleGuildDemo.UI
             {
                 simulateAfkButton.onClick.RemoveListener(SimulateAfkTwoHours);
             }
+
+            if (claimQuestButton != null)
+            {
+                claimQuestButton.onClick.RemoveListener(ClaimQuestReward);
+            }
         }
 
         public void Refresh()
@@ -103,12 +125,14 @@ namespace IdleGuildDemo.UI
             }
 
             character.Normalize();
+            SyncAutoQuestProgress(services, character);
             SetText(activeCharacterText, character.displayName);
             SetText(levelText, $"Level {character.level} | XP {character.currentXp}");
             SetText(xpText, $"XP {character.currentXp}");
             SetText(taskText, GetTaskLabel(character.currentTask));
             SetText(coinsText, GetCurrencyAndInventoryLabel(services));
             SetText(inventoryText, GetInventoryLabel(services));
+            RefreshQuest(services);
         }
 
         public void GoToCombat()
@@ -123,12 +147,26 @@ namespace IdleGuildDemo.UI
 
         public void OpenInventory()
         {
-            SetStatus("Inventory panel hook ready.");
+            if (inventoryCraftingPanel != null)
+            {
+                inventoryCraftingPanel.Show();
+                SetStatus("Inventory and crafting opened.");
+                return;
+            }
+
+            SetStatus("Inventory panel is not assigned.");
         }
 
         public void OpenCharacterPanel()
         {
-            SetStatus("Character panel hook ready.");
+            if (characterProgressionPanel != null)
+            {
+                characterProgressionPanel.Show();
+                SetStatus("Character and talents opened.");
+                return;
+            }
+
+            SetStatus("Character panel is not assigned.");
         }
 
         public void SimulateAfkTwoHours()
@@ -139,11 +177,41 @@ namespace IdleGuildDemo.UI
                 return;
             }
 
-            services.OfflineProgressionSystem.SimulateAndApplyRewards(
+            AfkRewardSummary summary = services.OfflineProgressionSystem.SimulateAndApplyRewards(
                 services.PlayerProfile,
                 TimeSpan.FromHours(GameConstants.OfflineDemoSimulatedHours));
             services.SaveSystem.Save(services.SaveData);
-            SetStatus("Simulated 2 hours AFK.");
+            if (afkResultsModal != null)
+            {
+                afkResultsModal.SetResults(summary);
+                afkResultsModal.Show();
+            }
+
+            SetStatus("AFK rewards applied.");
+            Refresh();
+        }
+
+        public void ClaimQuestReward()
+        {
+            if (!TryGetServices(out ServiceRegistry services))
+            {
+                SetStatus("Runtime is not ready.");
+                return;
+            }
+
+            QuestClaimResult result = services.QuestSystem.ClaimCurrentQuest(questDefinitions);
+            if (!result.success)
+            {
+                SetStatus(string.IsNullOrEmpty(result.failureReason) ? "Quest is not ready to claim." : result.failureReason);
+                Refresh();
+                return;
+            }
+
+            services.SaveSystem.Save(services.SaveData);
+            string message = result.unlockedSecondCharacter
+                ? "Quest claimed. Character 2 unlocked."
+                : "Quest claimed.";
+            SetStatus(message);
             Refresh();
         }
 
@@ -151,7 +219,8 @@ namespace IdleGuildDemo.UI
         {
             int slimeGoo = services.InventorySystem.GetQuantity(GameConstants.ItemSlimeGooId);
             int copperOre = services.InventorySystem.GetQuantity(GameConstants.ItemCopperOreId);
-            return $"Inventory: Slime Goo {slimeGoo}, Copper Ore {copperOre}";
+            int copperBar = services.InventorySystem.GetQuantity(GameConstants.ItemCopperBarId);
+            return $"Inventory: Slime Goo {slimeGoo}, Copper Ore {copperOre}, Copper Bar {copperBar}";
         }
 
         private static string GetCurrencyAndInventoryLabel(ServiceRegistry services)
@@ -173,9 +242,109 @@ namespace IdleGuildDemo.UI
                 : $"Task: {task.taskType} / {task.targetId}";
         }
 
+        private void RefreshQuest(ServiceRegistry services)
+        {
+            QuestDefinition quest = services.QuestSystem.GetCurrentQuest(questDefinitions);
+            if (quest == null)
+            {
+                SetText(questTitleText, "Quest Chain Complete");
+                SetText(questObjectiveText, "All tutorial quests are complete.");
+                SetText(questProgressText, string.Empty);
+                SetProgress(questProgressFill, 1f);
+                SetInteractable(claimQuestButton, false);
+                return;
+            }
+
+            services.PlayerProfile.questProgress.Normalize();
+            int required = quest.RequiredAmount > 0 ? quest.RequiredAmount : 1;
+            int current = services.PlayerProfile.questProgress.currentAmount;
+            if (current > required)
+            {
+                current = required;
+            }
+
+            bool canClaim = services.QuestSystem.CanClaimCurrentQuest(questDefinitions);
+            SetText(questTitleText, quest.DisplayName);
+            SetText(questObjectiveText, GetQuestObjectiveLabel(quest));
+            SetText(questProgressText, $"{current}/{required}");
+            SetProgress(questProgressFill, required > 0 ? (float)current / required : 0f);
+            SetInteractable(claimQuestButton, canClaim);
+        }
+
+        private void SyncAutoQuestProgress(ServiceRegistry services, CharacterState character)
+        {
+            QuestDefinition quest = services.QuestSystem.GetCurrentQuest(questDefinitions);
+            if (quest == null)
+            {
+                return;
+            }
+
+            if (quest.ObjectiveType == QuestObjectiveType.CollectItem)
+            {
+                int quantity = services.InventorySystem.GetQuantity(quest.TargetId);
+                int delta = quantity - services.PlayerProfile.questProgress.currentAmount;
+                if (delta > 0)
+                {
+                    services.QuestSystem.ReportItemCollected(quest.TargetId, delta, questDefinitions);
+                }
+            }
+            else if (quest.ObjectiveType == QuestObjectiveType.ReachLevel)
+            {
+                services.QuestSystem.ReportLevelReached(character.level, questDefinitions);
+            }
+            else if (quest.ObjectiveType == QuestObjectiveType.ChooseClass && !string.IsNullOrEmpty(character.selectedClassId))
+            {
+                services.QuestSystem.ReportClassChosen(character.selectedClassId, questDefinitions);
+            }
+        }
+
+        private static string GetQuestObjectiveLabel(QuestDefinition quest)
+        {
+            switch (quest.ObjectiveType)
+            {
+                case QuestObjectiveType.KillEnemy:
+                    return $"Defeat {quest.RequiredAmount} Slimes";
+                case QuestObjectiveType.CollectItem:
+                    return $"Collect {quest.RequiredAmount} {FormatItemName(quest.TargetId)}";
+                case QuestObjectiveType.CraftItem:
+                    return $"Craft {quest.RequiredAmount} {FormatItemName(quest.TargetId)}";
+                case QuestObjectiveType.ReachLevel:
+                    return $"Reach level {quest.RequiredAmount}";
+                case QuestObjectiveType.ChooseClass:
+                    return "Choose a class";
+                case QuestObjectiveType.UnlockCharacter:
+                    return "Unlock Character 2";
+                default:
+                    return quest.Description;
+            }
+        }
+
+        private static string FormatItemName(string itemId)
+        {
+            switch (itemId)
+            {
+                case GameConstants.ItemCopperOreId:
+                    return "Copper Ore";
+                case GameConstants.ItemCopperBarId:
+                    return "Copper Bar";
+                case GameConstants.ItemSlimeGooId:
+                    return "Slime Goo";
+                case GameConstants.ItemCopperSwordId:
+                    return "Copper Sword";
+                case GameConstants.ItemCopperPickaxeId:
+                    return "Copper Pickaxe";
+                default:
+                    return string.IsNullOrEmpty(itemId) ? "Item" : itemId;
+            }
+        }
+
         private void SetStatus(string message)
         {
             SetText(statusText, message);
+            if (!string.IsNullOrEmpty(message))
+            {
+                toastView?.Show(message);
+            }
         }
 
         private static void SetText(Text text, string value)
@@ -183,6 +352,22 @@ namespace IdleGuildDemo.UI
             if (text != null)
             {
                 text.text = value;
+            }
+        }
+
+        private static void SetProgress(Image image, float normalized)
+        {
+            if (image != null)
+            {
+                image.fillAmount = Mathf.Clamp01(normalized);
+            }
+        }
+
+        private static void SetInteractable(Button button, bool interactable)
+        {
+            if (button != null)
+            {
+                button.interactable = interactable;
             }
         }
 

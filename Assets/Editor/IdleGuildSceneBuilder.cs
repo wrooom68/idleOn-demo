@@ -18,6 +18,9 @@ namespace IdleGuildDemo.Editor
         private const string CombatPath = "Assets/Scenes/CombatZone.unity";
         private const string MinePath = "Assets/Scenes/MineZone.unity";
         private const string SlimeDefinitionPath = "Assets/Data/Enemies/Enemy_Slime.asset";
+        private const string CopperBarRecipePath = "Assets/Data/Recipes/Recipe_CopperBar.asset";
+        private const string CopperSwordRecipePath = "Assets/Data/Recipes/Recipe_CopperSword.asset";
+        private const string CopperPickaxeRecipePath = "Assets/Data/Recipes/Recipe_CopperPickaxe.asset";
 
         private static readonly Color BackgroundColor = new Color(0.043f, 0.063f, 0.125f, 1f); // #0B1020
         private static readonly Color PanelColor = new Color(0.122f, 0.161f, 0.216f, 1f); // #1F2937
@@ -121,12 +124,12 @@ namespace IdleGuildDemo.Editor
 
             // Panel_QuestTracker (matching Frame_02_TownHUD)
             GameObject questPanel = CreatePanel(canvas.transform, "Panel_QuestTracker", PanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 204f, -40f, 360f, 220f));
-            CreateText(questPanel.transform, "Text_QuestTitle", "Quest: First Hunt", 26, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -30f, 310f, 35f), GoldColor);
-            CreateText(questPanel.transform, "Text_QuestObjective", "Kill 5 Slimes", 22, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -65f, 310f, 30f));
+            Text questTitleText = CreateText(questPanel.transform, "Text_QuestTitle", "Quest: First Hunt", 26, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -30f, 310f, 35f), GoldColor);
+            Text questObjectiveText = CreateText(questPanel.transform, "Text_QuestObjective", "Kill 5 Slimes", 22, TextAnchor.UpperLeft, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -65f, 310f, 30f));
             
             Image questFill = CreateProgressBar(questPanel.transform, "ProgressBar_QuestProgress", Anchored(0.5f, 0.5f, 0.5f, 0.5f, 0f, -20f, 315f, 30f), GoldColor);
-            CreateText(questFill.transform.parent, "Text_ProgressBar_QuestProgress_Label", "2 / 5", 18, TextAnchor.MiddleCenter, Stretch());
-            CreateButton(questPanel.transform, "Button_ClaimReward_Disabled", "Claim", Anchored(0f, 0f, 0f, 0f, 94f, 35f, 140f, 38f));
+            Text questProgressText = CreateText(questFill.transform.parent, "Text_ProgressBar_QuestProgress_Label", "2 / 5", 18, TextAnchor.MiddleCenter, Stretch());
+            Button claimQuestButton = CreateButton(questPanel.transform, "Button_ClaimReward", "Claim", Anchored(0f, 0f, 0f, 0f, 94f, 35f, 140f, 38f));
 
             // WorldArea_Town (matching Frame_02_TownHUD)
             GameObject worldPanel = CreatePanel(canvas.transform, "WorldArea_Town", SubPanelColor, Center(125f, -50f, 1010f, 690f));
@@ -156,18 +159,34 @@ namespace IdleGuildDemo.Editor
             Text inventoryText = CreateText(logPanel.transform, "Row_Loot_Item", "+1 Slime Goo", 22, TextAnchor.UpperLeft, Rect(0f, -20f, 300f, 30f), LightGreenColor);
             Text statusText = CreateText(logPanel.transform, "Row_Loot_Info", "Recent rewards appear here", 18, TextAnchor.UpperLeft, Rect(0f, -80f, 300f, 50f), MutedTextColor);
 
+            ToastView toastView = CreateToast(canvas.transform);
+            InventoryCraftingPanel inventoryCraftingPanel = CreateInventoryCraftingPanel(canvas.transform, view, toastView);
+            CharacterProgressionPanel characterProgressionPanel = CreateCharacterProgressionPanel(canvas.transform, view, toastView);
+            AfkResultsModal afkResultsModal = CreateAfkResultsModal(canvas.transform);
+            QuestDefinition[] questDefinitions = LoadQuestDefinitions();
+
             AssignObject(view, "inventoryButton", inventoryButton);
             AssignObject(view, "characterPanelButton", characterPanelButton2);
             AssignObject(view, "combatButton", combatButton);
             AssignObject(view, "miningButton", miningButton);
             AssignObject(view, "simulateAfkButton", simulateAfkButton);
+            AssignObject(view, "claimQuestButton", claimQuestButton);
             AssignObject(view, "activeCharacterText", activeCharacterText);
             AssignObject(view, "levelText", levelText);
             AssignObject(view, "xpText", xpText);
             AssignObject(view, "taskText", taskText);
             AssignObject(view, "coinsText", coinsText);
             AssignObject(view, "inventoryText", inventoryText);
+            AssignObject(view, "questTitleText", questTitleText);
+            AssignObject(view, "questObjectiveText", questObjectiveText);
+            AssignObject(view, "questProgressText", questProgressText);
+            AssignObject(view, "questProgressFill", questFill);
             AssignObject(view, "statusText", statusText);
+            AssignObject(view, "inventoryCraftingPanel", inventoryCraftingPanel);
+            AssignObject(view, "characterProgressionPanel", characterProgressionPanel);
+            AssignObject(view, "afkResultsModal", afkResultsModal);
+            AssignObject(view, "toastView", toastView);
+            AssignObjectArray(view, "questDefinitions", questDefinitions);
 
             SaveScene(scene, TownPath);
         }
@@ -245,6 +264,7 @@ namespace IdleGuildDemo.Editor
             CreateText(logPanel.transform, "Row_Loot_Coins", "+3 Coins", 22, TextAnchor.UpperLeft, Rect(0f, 20f, 300f, 30f), GoldColor);
             Text rewardText = CreateText(logPanel.transform, "Row_Loot_Item", "+1 Slime Goo", 22, TextAnchor.UpperLeft, Rect(0f, -20f, 300f, 30f), LightGreenColor);
             Text statusText = CreateText(logPanel.transform, "Row_Loot_Info", "Recent rewards appear here", 18, TextAnchor.UpperLeft, Rect(0f, -80f, 300f, 50f), MutedTextColor);
+            ToastView toastView = CreateToast(canvas.transform);
 
             AssignObject(view, "slimeDefinition", AssetDatabase.LoadAssetAtPath<EnemyDefinition>(SlimeDefinitionPath));
             AssignObject(view, "backToTownButton", backButton);
@@ -255,6 +275,8 @@ namespace IdleGuildDemo.Editor
             AssignObject(view, "enemyText", enemyText);
             AssignObject(view, "rewardText", rewardText);
             AssignObject(view, "statusText", statusText);
+            AssignObject(view, "toastView", toastView);
+            AssignObjectArray(view, "questDefinitions", LoadQuestDefinitions());
 
             SaveScene(scene, CombatPath);
         }
@@ -327,6 +349,7 @@ namespace IdleGuildDemo.Editor
             CreateText(logPanel.transform, "Row_CopperOre", "+1 Copper Ore", 22, TextAnchor.UpperLeft, Rect(0f, 35f, 300f, 30f), LightGreenColor);
             Text rewardText = CreateText(logPanel.transform, "Row_MiningXP", "+2 XP", 22, TextAnchor.UpperLeft, Rect(0f, -5f, 300f, 30f), BlueColor);
             Text statusText = CreateText(logPanel.transform, "Text_Status", "Ready", 18, TextAnchor.UpperLeft, Rect(0f, -55f, 300f, 40f), MutedTextColor);
+            ToastView toastView = CreateToast(canvas.transform);
 
             AssignObject(view, "backToTownButton", backButton);
             AssignObject(view, "startMiningButton", startButton);
@@ -336,6 +359,8 @@ namespace IdleGuildDemo.Editor
             AssignObject(view, "progressText", progressText);
             AssignObject(view, "rewardText", rewardText);
             AssignObject(view, "statusText", statusText);
+            AssignObject(view, "toastView", toastView);
+            AssignObjectArray(view, "questDefinitions", LoadQuestDefinitions());
 
             SaveScene(scene, MinePath);
         }
@@ -450,6 +475,136 @@ namespace IdleGuildDemo.Editor
             return fill;
         }
 
+        private static InventoryCraftingPanel CreateInventoryCraftingPanel(
+            Transform parent,
+            TownHUDView townHudView,
+            ToastView toastView)
+        {
+            GameObject panel = CreatePanel(parent, "Panel_InventoryCrafting", PanelColor, Center(0f, 0f, 1180f, 740f));
+            InventoryCraftingPanel view = panel.AddComponent<InventoryCraftingPanel>();
+            CreateText(panel.transform, "Text_Title", "Inventory & Crafting", 34, TextAnchor.MiddleLeft, Anchored(0f, 1f, 0f, 1f, 260f, -45f, 420f, 48f), GoldColor);
+            Button closeButton = CreateButton(panel.transform, "Button_Close", "Close", Anchored(1f, 1f, 1f, 1f, -95f, -45f, 140f, 48f));
+
+            GameObject inventoryPanel = CreatePanel(panel.transform, "Panel_Inventory", SubPanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 275f, -10f, 470f, 520f));
+            CreateText(inventoryPanel.transform, "Text_Header", "Inventory", 28, TextAnchor.UpperLeft, Rect(0f, 210f, 390f, 42f));
+            Text inventoryText = CreateText(inventoryPanel.transform, "Text_ItemQuantities", "Copper Ore: 0\nCopper Bar: 0\nSlime Goo: 0\nCopper Sword: 0\nCopper Pickaxe: 0\nCoins: 0", 24, TextAnchor.UpperLeft, Rect(0f, -10f, 390f, 360f), TextColor);
+
+            GameObject craftingPanel = CreatePanel(panel.transform, "Panel_Crafting", SubPanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -335f, -10f, 560f, 520f));
+            CreateText(craftingPanel.transform, "Text_Header", "Crafting", 28, TextAnchor.UpperLeft, Rect(0f, 210f, 470f, 42f));
+
+            Text copperBarRecipeText = CreateText(craftingPanel.transform, "Recipe_CopperBar_Text", "Copper Bar\nNeeds: 3 Copper Ore", 21, TextAnchor.UpperLeft, Rect(-90f, 130f, 330f, 86f), TextColor);
+            Button craftCopperBarButton = CreateButton(craftingPanel.transform, "Button_CraftCopperBar", "Craft", Rect(190f, 120f, 130f, 50f));
+
+            Text copperSwordRecipeText = CreateText(craftingPanel.transform, "Recipe_CopperSword_Text", "Copper Sword\nNeeds: 2 Copper Bar + 3 Slime Goo", 21, TextAnchor.UpperLeft, Rect(-90f, -10f, 330f, 96f), TextColor);
+            Button craftCopperSwordButton = CreateButton(craftingPanel.transform, "Button_CraftCopperSword", "Craft", Rect(190f, -20f, 130f, 50f));
+
+            Text copperPickaxeRecipeText = CreateText(craftingPanel.transform, "Recipe_CopperPickaxe_Text", "Copper Pickaxe\nNeeds: 2 Copper Bar", 21, TextAnchor.UpperLeft, Rect(-90f, -150f, 330f, 86f), TextColor);
+            Button craftCopperPickaxeButton = CreateButton(craftingPanel.transform, "Button_CraftCopperPickaxe", "Craft", Rect(190f, -160f, 130f, 50f));
+
+            Text statusText = CreateText(panel.transform, "Text_Status", "Crafting status appears here.", 23, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 46f, 980f, 42f), MutedTextColor);
+
+            AssignObject(view, "root", panel);
+            AssignObject(view, "closeButton", closeButton);
+            AssignObject(view, "inventoryText", inventoryText);
+            AssignObject(view, "copperBarRecipeText", copperBarRecipeText);
+            AssignObject(view, "copperSwordRecipeText", copperSwordRecipeText);
+            AssignObject(view, "copperPickaxeRecipeText", copperPickaxeRecipeText);
+            AssignObject(view, "craftCopperBarButton", craftCopperBarButton);
+            AssignObject(view, "craftCopperSwordButton", craftCopperSwordButton);
+            AssignObject(view, "craftCopperPickaxeButton", craftCopperPickaxeButton);
+            AssignObject(view, "statusText", statusText);
+            AssignObject(view, "toastView", toastView);
+            AssignObject(view, "townHudView", townHudView);
+            AssignObject(view, "copperBarRecipe", AssetDatabase.LoadAssetAtPath<RecipeDefinition>(CopperBarRecipePath));
+            AssignObject(view, "copperSwordRecipe", AssetDatabase.LoadAssetAtPath<RecipeDefinition>(CopperSwordRecipePath));
+            AssignObject(view, "copperPickaxeRecipe", AssetDatabase.LoadAssetAtPath<RecipeDefinition>(CopperPickaxeRecipePath));
+            AssignObjectArray(view, "questDefinitions", LoadQuestDefinitions());
+
+            panel.SetActive(false);
+            return view;
+        }
+
+        private static CharacterProgressionPanel CreateCharacterProgressionPanel(
+            Transform parent,
+            TownHUDView townHudView,
+            ToastView toastView)
+        {
+            GameObject panel = CreatePanel(parent, "Panel_CharacterProgression", PanelColor, Center(0f, 0f, 1220f, 720f));
+            CharacterProgressionPanel view = panel.AddComponent<CharacterProgressionPanel>();
+            CreateText(panel.transform, "Text_Title", "Character / Class / Talents", 34, TextAnchor.MiddleLeft, Anchored(0f, 1f, 0f, 1f, 320f, -45f, 560f, 48f), GoldColor);
+            Button closeButton = CreateButton(panel.transform, "Button_Close", "Close", Anchored(1f, 1f, 1f, 1f, -95f, -45f, 140f, 48f));
+
+            GameObject summaryPanel = CreatePanel(panel.transform, "Panel_CharacterSummary", SubPanelColor, Anchored(0f, 0.5f, 0f, 0.5f, 270f, -5f, 440f, 520f));
+            Text summaryText = CreateText(summaryPanel.transform, "Text_Summary", "Character\nLevel 1\nClass: None\nTalent Points: 0", 24, TextAnchor.UpperLeft, Rect(0f, 100f, 360f, 230f));
+            Text statsText = CreateText(summaryPanel.transform, "Text_Stats", "Damage: 3\nMining Speed: 1x\nXP Gain: 1x\nDrop Rate: 1x\nAFK Gain: 1x", 23, TextAnchor.UpperLeft, Rect(0f, -120f, 360f, 230f), MutedTextColor);
+
+            GameObject classPanel = CreatePanel(panel.transform, "Panel_ClassChoice", SubPanelColor, Center(130f, 80f, 330f, 360f));
+            CreateText(classPanel.transform, "Text_Header", "Class Choice", 27, TextAnchor.UpperCenter, Rect(0f, 135f, 280f, 38f), GoldColor);
+            Button warriorButton = CreateButton(classPanel.transform, "Button_Warrior", "Warrior +Damage", Rect(0f, 70f, 250f, 52f));
+            Button archerButton = CreateButton(classPanel.transform, "Button_Archer", "Archer +Drop", Rect(0f, 0f, 250f, 52f));
+            Button mageButton = CreateButton(classPanel.transform, "Button_Mage", "Mage +AFK", Rect(0f, -70f, 250f, 52f));
+
+            GameObject talentPanel = CreatePanel(panel.transform, "Panel_Talents", SubPanelColor, Anchored(1f, 0.5f, 1f, 0.5f, -270f, -5f, 420f, 520f));
+            CreateText(talentPanel.transform, "Text_Header", "Talents", 27, TextAnchor.UpperCenter, Rect(0f, 205f, 340f, 38f), GoldColor);
+            Button damageTalentButton = CreateButton(talentPanel.transform, "TalentNode_Damage", "Damage + (0)", Rect(0f, 125f, 310f, 56f));
+            Button miningSpeedTalentButton = CreateButton(talentPanel.transform, "TalentNode_MiningSpeed", "Mining Speed + (0)", Rect(0f, 50f, 310f, 56f));
+            Button xpGainTalentButton = CreateButton(talentPanel.transform, "TalentNode_XPGain", "XP Gain + (0)", Rect(0f, -25f, 310f, 56f));
+            Button afkGainTalentButton = CreateButton(talentPanel.transform, "TalentNode_AfkGain", "AFK Gain + (0)", Rect(0f, -100f, 310f, 56f));
+
+            Text statusText = CreateText(panel.transform, "Text_Status", "Class unlocks at level 5.", 23, TextAnchor.MiddleLeft, Anchored(0.5f, 0f, 0.5f, 0f, 0f, 44f, 1000f, 42f), MutedTextColor);
+
+            AssignObject(view, "root", panel);
+            AssignObject(view, "closeButton", closeButton);
+            AssignObject(view, "summaryText", summaryText);
+            AssignObject(view, "statsText", statsText);
+            AssignObject(view, "statusText", statusText);
+            AssignObject(view, "warriorButton", warriorButton);
+            AssignObject(view, "archerButton", archerButton);
+            AssignObject(view, "mageButton", mageButton);
+            AssignObject(view, "damageTalentButton", damageTalentButton);
+            AssignObject(view, "miningSpeedTalentButton", miningSpeedTalentButton);
+            AssignObject(view, "xpGainTalentButton", xpGainTalentButton);
+            AssignObject(view, "afkGainTalentButton", afkGainTalentButton);
+            AssignObject(view, "toastView", toastView);
+            AssignObject(view, "townHudView", townHudView);
+            AssignObjectArray(view, "questDefinitions", LoadQuestDefinitions());
+
+            panel.SetActive(false);
+            return view;
+        }
+
+        private static AfkResultsModal CreateAfkResultsModal(Transform parent)
+        {
+            GameObject panel = CreatePanel(parent, "Modal_AfkResults", PanelColor, Center(0f, 0f, 820f, 560f));
+            AfkResultsModal modal = panel.AddComponent<AfkResultsModal>();
+            Text titleText = CreateText(panel.transform, "Text_Title", "AFK Results", 36, TextAnchor.MiddleCenter, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -50f, 700f, 56f), GoldColor);
+            Text durationText = CreateText(panel.transform, "Text_AwayDuration", "120 minutes simulated", 24, TextAnchor.MiddleCenter, Anchored(0.5f, 1f, 0.5f, 1f, 0f, -100f, 700f, 38f), MutedTextColor);
+            Text resultsText = CreateText(panel.transform, "List_CharacterRewardSummaries", "Character rewards appear here.", 24, TextAnchor.UpperLeft, Rect(0f, -20f, 680f, 300f));
+            Button closeButton = CreateButton(panel.transform, "Button_ClaimContinue", "Continue", Anchored(0.5f, 0f, 0.5f, 0f, 0f, 54f, 240f, 58f));
+
+            AssignObject(modal, "root", panel);
+            AssignObject(modal, "titleText", titleText);
+            AssignObject(modal, "durationText", durationText);
+            AssignObject(modal, "resultsText", resultsText);
+            AssignObject(modal, "closeButton", closeButton);
+
+            panel.SetActive(false);
+            return modal;
+        }
+
+        private static ToastView CreateToast(Transform parent)
+        {
+            GameObject toastObject = CreatePanel(parent, "Toast_Default", new Color(0.08f, 0.10f, 0.14f, 0.96f), Anchored(0.5f, 1f, 0.5f, 1f, 0f, -112f, 620f, 68f));
+            CanvasGroup canvasGroup = toastObject.AddComponent<CanvasGroup>();
+            canvasGroup.alpha = 0f;
+            ToastView toastView = toastObject.AddComponent<ToastView>();
+            Text toastText = CreateText(toastObject.transform, "Text_Toast", "Status", 24, TextAnchor.MiddleCenter, Stretch(18f, 8f, 18f, 8f), TextColor);
+
+            AssignObject(toastView, "toastText", toastText);
+            AssignObject(toastView, "canvasGroup", canvasGroup);
+            return toastView;
+        }
+
         private static GameObject CreateUiObject(string name, Transform parent, RectPreset preset)
         {
             GameObject gameObject = new GameObject(name);
@@ -498,6 +653,44 @@ namespace IdleGuildDemo.Editor
 
             property.objectReferenceValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void AssignObjectArray(Object target, string propertyName, Object[] values)
+        {
+            SerializedObject serializedObject = new SerializedObject(target);
+            SerializedProperty property = serializedObject.FindProperty(propertyName);
+            if (property == null || !property.isArray)
+            {
+                Debug.LogWarning($"{target.GetType().Name} is missing serialized array field '{propertyName}'.");
+                return;
+            }
+
+            Object[] safeValues = values ?? new Object[0];
+            property.arraySize = safeValues.Length;
+            for (int i = 0; i < safeValues.Length; i++)
+            {
+                property.GetArrayElementAtIndex(i).objectReferenceValue = safeValues[i];
+            }
+
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static QuestDefinition[] LoadQuestDefinitions()
+        {
+            string[] guids = AssetDatabase.FindAssets("t:QuestDefinition", new[] { "Assets/Data/Quests" });
+            List<QuestDefinition> quests = new List<QuestDefinition>();
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                QuestDefinition quest = AssetDatabase.LoadAssetAtPath<QuestDefinition>(path);
+                if (quest != null)
+                {
+                    quests.Add(quest);
+                }
+            }
+
+            quests.Sort((left, right) => string.CompareOrdinal(left.Id, right.Id));
+            return quests.ToArray();
         }
 
         private static void SaveScene(Scene scene, string path)
@@ -607,4 +800,3 @@ namespace IdleGuildDemo.Editor
         }
     }
 }
-
