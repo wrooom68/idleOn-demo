@@ -7,43 +7,40 @@ namespace IdleGuildDemo.UI
   {
     [SerializeField] private UIRootController root;
     [SerializeField] private NavigationBarView navigationBar;
+    [SerializeField] private TownHUDView townHudView;
     [SerializeField] private AfkResultsModal afkResultsModal;
 
-    private void Awake()
+    private void OnEnable()
     {
-      if (root == null || navigationBar == null)
+      if (!Application.isPlaying)
       {
         return;
       }
 
-      if (navigationBar.InventoryButton != null)
+      if (root != null && navigationBar != null)
       {
-        navigationBar.InventoryButton.onClick.AddListener(root.ShowInventory);
-      }
-
-      if (navigationBar.CraftingButton != null)
-      {
-        navigationBar.CraftingButton.onClick.AddListener(root.ShowCrafting);
-      }
-
-      if (navigationBar.CharactersButton != null)
-      {
-        navigationBar.CharactersButton.onClick.AddListener(root.ShowCharacters);
-      }
-
-      if (navigationBar.TalentsButton != null)
-      {
-        navigationBar.TalentsButton.onClick.AddListener(root.ShowTalents);
-      }
-
-      if (navigationBar.SimulateAfkButton != null)
-      {
-        navigationBar.SimulateAfkButton.onClick.AddListener(root.ShowAfkResults);
+        navigationBar.Bind(root, townHudView);
+        navigationBar.SetActiveView("Town");
       }
 
       if (afkResultsModal != null && afkResultsModal.CloseButton != null)
       {
         afkResultsModal.CloseButton.onClick.AddListener(afkResultsModal.Hide);
+      }
+    }
+
+    private void OnDisable()
+    {
+      if (!Application.isPlaying)
+      {
+        return;
+      }
+
+      navigationBar?.Unbind();
+
+      if (afkResultsModal != null && afkResultsModal.CloseButton != null)
+      {
+        afkResultsModal.CloseButton.onClick.RemoveListener(afkResultsModal.Hide);
       }
     }
   }

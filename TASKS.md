@@ -377,7 +377,7 @@ Commit: Add scene navigation and readability pass
 
 ## Task 41
 
-Status: READY
+Status: DONE
 Title: Navigation UI binding
 Commit: Add navigation UI binding
 
