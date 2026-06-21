@@ -15,10 +15,13 @@ namespace IdleGuildDemo.UI
         [SerializeField] private Button resetButton;
         [SerializeField] private Text evaluationNoteText;
         [SerializeField] private Text statusText;
+        [SerializeField] private bool requireResetConfirmation = true;
 
         public Button NewGameButton => newGameButton;
         public Button ContinueButton => continueButton;
         public Button ResetButton => resetButton;
+
+        private bool resetConfirmationPending;
 
         private void OnEnable()
         {
@@ -65,6 +68,7 @@ namespace IdleGuildDemo.UI
 
         public void NewGame()
         {
+            ClearResetConfirmation();
             SetStatus("Starting a fresh demo save...");
             SaveSystem saveSystem = GetSaveSystem();
             saveSystem.DeleteSave();
@@ -76,6 +80,7 @@ namespace IdleGuildDemo.UI
 
         public void ContinueGame()
         {
+            ClearResetConfirmation();
             SaveSystem saveSystem = GetSaveSystem();
             if (!saveSystem.TryLoadExisting(out SaveData saveData))
             {
@@ -97,9 +102,23 @@ namespace IdleGuildDemo.UI
 
         public void DeleteSave()
         {
+            if (requireResetConfirmation && !resetConfirmationPending)
+            {
+                resetConfirmationPending = true;
+                SetButtonText(resetButton, "Confirm Reset");
+                SetStatus("Press Reset Save again to permanently clear the local save.");
+                return;
+            }
+
+            ResetSaveImmediately();
+        }
+
+        public void ResetSaveImmediately()
+        {
             SaveSystem saveSystem = GetSaveSystem();
             saveSystem.DeleteSave();
             ServiceRegistry.Instance.Clear();
+            ClearResetConfirmation();
             SetStatus("Save reset. New Game will start from the beginning.");
             RefreshMenuState();
         }
@@ -149,7 +168,7 @@ namespace IdleGuildDemo.UI
             SetEvaluationNote("Designed to show all major systems in under 30 minutes");
             SetButtonText(newGameButton, "New Game");
             SetButtonText(continueButton, "Continue");
-            SetButtonText(resetButton, "Reset Save");
+            SetButtonText(resetButton, resetConfirmationPending ? "Confirm Reset" : "Reset Save");
         }
 
         private static void SetButtonText(Button button, string label)
@@ -174,6 +193,12 @@ namespace IdleGuildDemo.UI
             }
 
             return $"Save found. Last saved {saveData.lastSavedUtc}.";
+        }
+
+        private void ClearResetConfirmation()
+        {
+            resetConfirmationPending = false;
+            SetButtonText(resetButton, "Reset Save");
         }
 
         private static SaveSystem GetSaveSystem()

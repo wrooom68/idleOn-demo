@@ -395,7 +395,7 @@ Commit: Add save and continue flow
 
 ## Task 44
 
-Status: READY
+Status: DONE
 Title: New game reset flow
 Commit: Add new game reset flow
 
