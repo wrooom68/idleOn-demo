@@ -305,7 +305,7 @@ Commit: Implement talent system
 
 ## Task 29
 
-Status: READY
+Status: DONE
 Title: Class and talent UI integration
 Commit: Add class and talent UI integration
 

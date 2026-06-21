@@ -11,6 +11,12 @@ namespace IdleGuildDemo.UI
     [SerializeField] private Button upgradeButton;
 
     public Button UpgradeButton => upgradeButton;
+    public string TalentId { get; private set; }
+
+    public void SetTalentId(string talentId)
+    {
+      TalentId = talentId ?? string.Empty;
+    }
 
     public void SetTalent(string talentName, string description, int rank, int maxRank, bool canUpgrade)
     {
@@ -33,6 +39,17 @@ namespace IdleGuildDemo.UI
       {
         upgradeButton.interactable = canUpgrade;
       }
+    }
+
+    public void BindUpgrade(System.Action<string> handler)
+    {
+      if (upgradeButton == null)
+      {
+        return;
+      }
+
+      upgradeButton.onClick.RemoveAllListeners();
+      upgradeButton.onClick.AddListener(() => handler?.Invoke(TalentId));
     }
   }
 }
