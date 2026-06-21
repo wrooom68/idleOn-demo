@@ -21,6 +21,8 @@ namespace IdleGuildDemo.UI
 
         private void OnEnable()
         {
+            if (!Application.isPlaying) return;
+
             if (newGameButton != null)
             {
                 newGameButton.onClick.AddListener(NewGame);
@@ -42,6 +44,8 @@ namespace IdleGuildDemo.UI
 
         private void OnDisable()
         {
+            if (!Application.isPlaying) return;
+
             if (newGameButton != null)
             {
                 newGameButton.onClick.RemoveListener(NewGame);

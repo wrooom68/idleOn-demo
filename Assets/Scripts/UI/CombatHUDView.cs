@@ -27,6 +27,8 @@ namespace IdleGuildDemo.UI
 
         private void OnEnable()
         {
+            if (!Application.isPlaying) return;
+
             if (backToTownButton != null)
             {
                 backToTownButton.onClick.AddListener(BackToTown);
@@ -47,6 +49,8 @@ namespace IdleGuildDemo.UI
 
         private void OnDisable()
         {
+            if (!Application.isPlaying) return;
+
             if (backToTownButton != null)
             {
                 backToTownButton.onClick.RemoveListener(BackToTown);

@@ -27,6 +27,8 @@ namespace IdleGuildDemo.UI
 
         private void OnEnable()
         {
+            if (!Application.isPlaying) return;
+
             if (inventoryButton != null)
             {
                 inventoryButton.onClick.AddListener(OpenInventory);
@@ -57,6 +59,8 @@ namespace IdleGuildDemo.UI
 
         private void OnDisable()
         {
+            if (!Application.isPlaying) return;
+
             if (inventoryButton != null)
             {
                 inventoryButton.onClick.RemoveListener(OpenInventory);

@@ -19,6 +19,11 @@ namespace IdleGuildDemo.Core
                 return true;
             }
 
+            if (!Application.isPlaying)
+            {
+                return false;
+            }
+
             GameBootstrap existingBootstrap = FindObjectOfType<GameBootstrap>();
             if (existingBootstrap == null)
             {
