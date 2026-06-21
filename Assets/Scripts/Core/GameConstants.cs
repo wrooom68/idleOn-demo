@@ -13,6 +13,9 @@ namespace IdleGuildDemo.Core
         public const string CopperPickaxeItemId = "item.copper_pickaxe";
         public const string SlimeEnemyId = "enemy.slime";
         public const string ItemCopperOreId = CopperOreItemId;
+        public const string ItemCopperBarId = CopperBarItemId;
+        public const string ItemCopperSwordId = CopperSwordItemId;
+        public const string ItemCopperPickaxeId = CopperPickaxeItemId;
         public const string ItemCoinsId = CoinItemId;
         public const string ItemSlimeGooId = SlimeGooItemId;
         public const string EnemySlimeId = SlimeEnemyId;
@@ -23,6 +26,9 @@ namespace IdleGuildDemo.Core
         public const string CopperBarRecipeId = "recipe.copper_bar";
         public const string CopperSwordRecipeId = "recipe.copper_sword";
         public const string CopperPickaxeRecipeId = "recipe.copper_pickaxe";
+        public const string RecipeCopperBarId = CopperBarRecipeId;
+        public const string RecipeCopperSwordId = CopperSwordRecipeId;
+        public const string RecipeCopperPickaxeId = CopperPickaxeRecipeId;
         public const string KillSlimesQuestId = "quest.kill_slimes";
         public const string CollectCopperOreQuestId = "quest.collect_copper_ore";
         public const string CraftCopperBarsQuestId = "quest.craft_copper_bars";
