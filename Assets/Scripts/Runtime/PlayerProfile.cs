@@ -13,6 +13,7 @@ namespace IdleGuildDemo.Runtime
         public string activeCharacterId = GameConstants.StartingCharacterId;
         public InventoryState inventory = new InventoryState();
         public int coins;
+        public QuestProgressState questProgress = new QuestProgressState();
         public List<QuestProgressState> quests = new List<QuestProgressState>();
         public string currentQuestId = string.Empty;
 
@@ -29,8 +30,13 @@ namespace IdleGuildDemo.Runtime
                     CreateStartingCharacter()
                 },
                 inventory = new InventoryState(),
+                questProgress = new QuestProgressState
+                {
+                    currentQuestId = GameConstants.QuestKillSlimesId,
+                    questId = GameConstants.QuestKillSlimesId
+                },
                 quests = new List<QuestProgressState>(),
-                currentQuestId = string.Empty
+                currentQuestId = GameConstants.QuestKillSlimesId
             };
         }
 
@@ -91,9 +97,32 @@ namespace IdleGuildDemo.Runtime
                 quests = new List<QuestProgressState>();
             }
 
-            if (currentQuestId == null)
+            if (questProgress == null)
             {
-                currentQuestId = string.Empty;
+                questProgress = new QuestProgressState();
+            }
+
+            if (!string.IsNullOrEmpty(currentQuestId)
+                && (string.IsNullOrEmpty(questProgress.currentQuestId)
+                    || (questProgress.currentQuestId == GameConstants.QuestKillSlimesId
+                        && currentQuestId != GameConstants.QuestKillSlimesId)))
+            {
+                questProgress.currentQuestId = currentQuestId;
+            }
+
+            questProgress.Normalize();
+            currentQuestId = questProgress.currentQuestId;
+
+            for (int i = quests.Count - 1; i >= 0; i--)
+            {
+                QuestProgressState quest = quests[i];
+                if (quest == null)
+                {
+                    quests.RemoveAt(i);
+                    continue;
+                }
+
+                quest.Normalize();
             }
         }
 

@@ -36,6 +36,13 @@ namespace IdleGuildDemo.Core
         public const string ReachLevel5QuestId = "quest.reach_level_5";
         public const string ChooseClassQuestId = "quest.choose_class";
         public const string UnlockCharacter2QuestId = "quest.unlock_character_2";
+        public const string QuestKillSlimesId = KillSlimesQuestId;
+        public const string QuestCollectCopperOreId = CollectCopperOreQuestId;
+        public const string QuestCraftCopperBarsId = CraftCopperBarsQuestId;
+        public const string QuestCraftCopperSwordId = CraftCopperSwordQuestId;
+        public const string QuestReachLevel5Id = ReachLevel5QuestId;
+        public const string QuestChooseClassId = ChooseClassQuestId;
+        public const string QuestUnlockCharacter2Id = UnlockCharacter2QuestId;
         public const int MaxOfflineHours = 8;
         public const int ClassUnlockLevel = 5;
         public const string StartingCharacterId = "char_001";
