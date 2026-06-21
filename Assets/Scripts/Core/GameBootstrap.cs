@@ -1,22 +1,67 @@
+using IdleGuildDemo.Runtime;
+using IdleGuildDemo.Save;
+using IdleGuildDemo.Systems;
 using UnityEngine;
 
 namespace IdleGuildDemo.Core
 {
     /// <summary>
-    /// Placeholder MonoBehaviour for future startup wiring and system composition.
+    /// Creates save data and backend systems for future scene controllers.
     /// </summary>
     public sealed class GameBootstrap : MonoBehaviour
     {
-        [SerializeField] private bool bootstrapOnStart = true;
+        [SerializeField] private bool dontDestroyOnLoad = true;
 
-        private void Start()
+        private void Awake()
         {
-            if (!bootstrapOnStart)
+            if (ServiceRegistry.Instance.IsInitialized)
             {
+                Destroy(gameObject);
                 return;
             }
 
-            // TODO: Create and register gameplay systems after the architecture is ready.
+            if (dontDestroyOnLoad)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+
+            SaveSystem saveSystem = new SaveSystem();
+            SaveData saveData = saveSystem.LoadOrCreate();
+            saveData.Normalize();
+
+            PlayerProfile profile = saveData.profile;
+            InventorySystem inventorySystem = new InventorySystem(profile.inventory);
+            ProgressionSystem progressionSystem = new ProgressionSystem();
+            StatsSystem statsSystem = new StatsSystem();
+            CharacterRosterSystem characterRosterSystem = new CharacterRosterSystem(profile);
+            CombatSystem combatSystem = new CombatSystem(inventorySystem, progressionSystem, statsSystem);
+            GatheringSystem gatheringSystem = new GatheringSystem(inventorySystem, progressionSystem, statsSystem);
+            CraftingSystem craftingSystem = new CraftingSystem(inventorySystem);
+            QuestSystem questSystem = new QuestSystem(
+                profile,
+                inventorySystem,
+                progressionSystem,
+                characterRosterSystem);
+            OfflineProgressionSystem offlineProgressionSystem = new OfflineProgressionSystem(
+                inventorySystem,
+                progressionSystem,
+                statsSystem);
+
+            ServiceRegistry.Instance.Initialize(
+                saveSystem,
+                saveData,
+                profile,
+                inventorySystem,
+                progressionSystem,
+                statsSystem,
+                characterRosterSystem,
+                combatSystem,
+                gatheringSystem,
+                craftingSystem,
+                questSystem,
+                offlineProgressionSystem);
+
+            // TODO: Trigger the future AFK rewards modal after UI flow exists.
         }
     }
 }
