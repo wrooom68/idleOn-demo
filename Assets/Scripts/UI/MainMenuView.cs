@@ -18,6 +18,7 @@ namespace IdleGuildDemo.UI
 
         public Button NewGameButton => newGameButton;
         public Button ContinueButton => continueButton;
+        public Button ResetButton => resetButton;
 
         private void OnEnable()
         {
@@ -38,8 +39,8 @@ namespace IdleGuildDemo.UI
                 resetButton.onClick.AddListener(DeleteSave);
             }
 
-            SetEvaluationNote("Designed to show all major systems in under 30 minutes");
-            Refresh();
+            ApplyDefaultText();
+            RefreshMenuState();
         }
 
         private void OnDisable()
@@ -64,6 +65,7 @@ namespace IdleGuildDemo.UI
 
         public void NewGame()
         {
+            SetStatus("Starting a fresh demo save...");
             SaveSystem saveSystem = GetSaveSystem();
             saveSystem.DeleteSave();
             SaveData saveData = SaveData.CreateNew();
@@ -75,6 +77,14 @@ namespace IdleGuildDemo.UI
         public void ContinueGame()
         {
             SaveSystem saveSystem = GetSaveSystem();
+            if (!saveSystem.SaveExists())
+            {
+                SetStatus("No save found. Choose New Game to start the reviewer path.");
+                RefreshMenuState();
+                return;
+            }
+
+            SetStatus("Continuing saved demo progress...");
             SaveData saveData = saveSystem.LoadOrCreate();
             saveData.Normalize();
             RegisterRuntime(saveSystem, saveData);
@@ -91,8 +101,8 @@ namespace IdleGuildDemo.UI
             SaveSystem saveSystem = GetSaveSystem();
             saveSystem.DeleteSave();
             ServiceRegistry.Instance.Clear();
-            SetStatus("Save reset.");
-            Refresh();
+            SetStatus("Save reset. New Game will start from the beginning.");
+            RefreshMenuState();
         }
 
         public void SetContinueAvailable(bool available)
@@ -111,9 +121,15 @@ namespace IdleGuildDemo.UI
             }
         }
 
-        private void Refresh()
+        public void RefreshMenuState()
         {
-            SetContinueAvailable(GetSaveSystem().SaveExists());
+            bool hasSave = GetSaveSystem().SaveExists();
+            SetContinueAvailable(hasSave);
+
+            if (string.IsNullOrEmpty(GetStatus()))
+            {
+                SetStatus(hasSave ? "Save found. Continue or start fresh." : "No save found. Start a new demo run.");
+            }
         }
 
         private void SetStatus(string message)
@@ -121,6 +137,33 @@ namespace IdleGuildDemo.UI
             if (statusText != null)
             {
                 statusText.text = message;
+            }
+        }
+
+        private string GetStatus()
+        {
+            return statusText != null ? statusText.text : string.Empty;
+        }
+
+        private void ApplyDefaultText()
+        {
+            SetEvaluationNote("Designed to show all major systems in under 30 minutes");
+            SetButtonText(newGameButton, "New Game");
+            SetButtonText(continueButton, "Continue");
+            SetButtonText(resetButton, "Reset Save");
+        }
+
+        private static void SetButtonText(Button button, string label)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            Text text = button.GetComponentInChildren<Text>();
+            if (text != null)
+            {
+                text.text = label;
             }
         }
 

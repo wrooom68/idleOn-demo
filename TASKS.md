@@ -383,7 +383,7 @@ Commit: Add navigation UI binding
 
 ## Task 42
 
-Status: READY
+Status: DONE
 Title: Main menu flow
 Commit: Add main menu flow
 
