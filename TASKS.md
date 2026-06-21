@@ -371,7 +371,7 @@ Commit: Add town scene flow binding
 
 ## Task 40
 
-Status: READY
+Status: DONE
 Title: Scene navigation and readability pass
 Commit: Add scene navigation and readability pass
 

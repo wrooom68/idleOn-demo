@@ -316,8 +316,8 @@ namespace IdleGuildDemo.UI
             }
 
             return string.IsNullOrEmpty(task.targetId)
-                ? $"Task: {task.taskType}"
-                : $"Task: {task.taskType} / {task.targetId}";
+                ? $"Task: {FormatTaskType(task.taskType)}"
+                : $"Task: {FormatTaskType(task.taskType)} - {FormatTargetName(task.targetId)}";
         }
 
         private void RefreshQuest(ServiceRegistry services)
@@ -383,19 +383,50 @@ namespace IdleGuildDemo.UI
             switch (quest.ObjectiveType)
             {
                 case QuestObjectiveType.KillEnemy:
-                    return $"Defeat {quest.RequiredAmount} Slimes";
+                    return $"Defeat {GetRequiredAmount(quest)} Slimes";
                 case QuestObjectiveType.CollectItem:
-                    return $"Collect {quest.RequiredAmount} {FormatItemName(quest.TargetId)}";
+                    return $"Collect {GetRequiredAmount(quest)} {FormatItemName(quest.TargetId)}";
                 case QuestObjectiveType.CraftItem:
-                    return $"Craft {quest.RequiredAmount} {FormatItemName(quest.TargetId)}";
+                    return $"Craft {GetRequiredAmount(quest)} {FormatItemName(quest.TargetId)}";
                 case QuestObjectiveType.ReachLevel:
-                    return $"Reach level {quest.RequiredAmount}";
+                    return $"Reach level {GetRequiredAmount(quest)}";
                 case QuestObjectiveType.ChooseClass:
                     return "Choose a class";
                 case QuestObjectiveType.UnlockCharacter:
                     return "Unlock Character 2";
                 default:
                     return quest.Description;
+            }
+        }
+
+        private static int GetRequiredAmount(QuestDefinition quest)
+        {
+            return quest != null && quest.RequiredAmount > 0 ? quest.RequiredAmount : 1;
+        }
+
+        private static string FormatTaskType(string taskType)
+        {
+            switch (taskType)
+            {
+                case GameConstants.TaskCombat:
+                    return "Fighting";
+                case GameConstants.TaskMining:
+                    return "Mining";
+                default:
+                    return string.IsNullOrEmpty(taskType) ? "Idle" : taskType;
+            }
+        }
+
+        private static string FormatTargetName(string targetId)
+        {
+            switch (targetId)
+            {
+                case GameConstants.EnemySlimeId:
+                    return "Slimes";
+                case GameConstants.ZoneMineCopperId:
+                    return "Copper";
+                default:
+                    return string.IsNullOrEmpty(targetId) ? "None" : targetId;
             }
         }
 
