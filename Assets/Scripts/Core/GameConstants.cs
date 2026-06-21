@@ -51,6 +51,10 @@ namespace IdleGuildDemo.Core
         public const int OfflineSlimeGooPerMinute = 1;
         public const int OfflineMiningXpPerMinute = 2;
         public const int OfflineCopperOrePerMinute = 1;
+        public const string MainMenuSceneName = "MainMenu";
+        public const string TownSceneName = "Town";
+        public const string CombatSceneName = "CombatZone";
+        public const string MineSceneName = "MineZone";
         public const int ClassUnlockLevel = 5;
         public const string StartingCharacterId = "char_001";
         public const string SecondCharacterId = "char_002";
