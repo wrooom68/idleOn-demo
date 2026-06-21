@@ -1,0 +1,7 @@
+{
+  "name": "Idle Guild UI Frame Generator",
+  "id": "idle-guild-ui-frame-generator",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}
