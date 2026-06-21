@@ -92,6 +92,13 @@ namespace IdleGuildDemo.Systems
             }
 
             character.Normalize();
+            if (!character.isUnlocked)
+            {
+                summary.characterId = character.characterId ?? string.Empty;
+                summary.characterName = character.displayName ?? string.Empty;
+                return summary;
+            }
+
             TaskState task = character.currentTask ?? new TaskState();
             task.Normalize();
 

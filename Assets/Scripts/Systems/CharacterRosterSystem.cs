@@ -21,15 +21,46 @@ namespace IdleGuildDemo.Systems
             return profile.characters;
         }
 
+        public IReadOnlyList<CharacterState> GetUnlockedCharacters()
+        {
+            profile.Normalize();
+            List<CharacterState> unlockedCharacters = new List<CharacterState>();
+            foreach (CharacterState character in profile.characters)
+            {
+                if (character != null && character.isUnlocked)
+                {
+                    unlockedCharacters.Add(character);
+                }
+            }
+
+            return unlockedCharacters;
+        }
+
         public CharacterState GetActiveCharacter()
         {
             profile.Normalize();
-            return GetCharacterById(profile.activeCharacterId);
+            CharacterState activeCharacter = GetCharacterById(profile.activeCharacterId);
+            if (activeCharacter != null && activeCharacter.isUnlocked)
+            {
+                return activeCharacter;
+            }
+
+            foreach (CharacterState character in profile.characters)
+            {
+                if (character != null && character.isUnlocked)
+                {
+                    profile.activeCharacterId = character.characterId;
+                    return character;
+                }
+            }
+
+            return null;
         }
 
         public bool SetActiveCharacter(string characterId)
         {
-            if (!HasCharacter(characterId))
+            CharacterState character = GetCharacterById(characterId);
+            if (character == null || !character.isUnlocked)
             {
                 return false;
             }
@@ -63,6 +94,11 @@ namespace IdleGuildDemo.Systems
             return GetCharacterById(characterId) != null;
         }
 
+        public CharacterState GetSecondCharacter()
+        {
+            return GetCharacterById(GameConstants.SecondCharacterId);
+        }
+
         public CharacterState UnlockSecondCharacter()
         {
             CharacterState existing = GetCharacterById(GameConstants.SecondCharacterId);
@@ -70,6 +106,7 @@ namespace IdleGuildDemo.Systems
             {
                 existing.isUnlocked = true;
                 existing.Normalize();
+                EnsureTaskStarted(existing);
                 return existing;
             }
 
@@ -84,7 +121,8 @@ namespace IdleGuildDemo.Systems
                 isUnlocked = true,
                 currentTask = new TaskState
                 {
-                    taskType = GameConstants.TaskIdle
+                    taskType = GameConstants.TaskIdle,
+                    startedUtc = DateTime.UtcNow.ToString("o")
                 }
             };
 
@@ -98,6 +136,26 @@ namespace IdleGuildDemo.Systems
         {
             CharacterState character = GetCharacterById(GameConstants.SecondCharacterId);
             return character != null && character.isUnlocked;
+        }
+
+        public TaskAssignmentResult AssignSecondCharacterIdle()
+        {
+            return AssignIdle(GameConstants.SecondCharacterId);
+        }
+
+        public TaskAssignmentResult AssignSecondCharacterSlimeCombat()
+        {
+            return AssignSlimeCombat(GameConstants.SecondCharacterId);
+        }
+
+        public TaskAssignmentResult AssignSecondCharacterCopperMining()
+        {
+            return AssignCopperMining(GameConstants.SecondCharacterId);
+        }
+
+        public TaskAssignmentResult AssignSecondCharacterTask(string taskType, string targetId)
+        {
+            return AssignTask(GameConstants.SecondCharacterId, taskType, targetId);
         }
 
         public TaskAssignmentResult AssignIdle(string characterId)
@@ -198,6 +256,20 @@ namespace IdleGuildDemo.Systems
             }
 
             return targetId ?? string.Empty;
+        }
+
+        private static void EnsureTaskStarted(CharacterState character)
+        {
+            if (character == null)
+            {
+                return;
+            }
+
+            character.Normalize();
+            if (string.IsNullOrEmpty(character.currentTask.startedUtc))
+            {
+                character.currentTask.startedUtc = DateTime.UtcNow.ToString("o");
+            }
         }
     }
 }

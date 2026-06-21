@@ -329,7 +329,7 @@ Commit: Add AFK rewards integration
 
 ## Task 33
 
-Status: READY
+Status: DONE
 Title: Second character task behavior
 Commit: Add second character task behavior
 
