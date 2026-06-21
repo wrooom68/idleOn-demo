@@ -16,6 +16,7 @@ namespace IdleGuildDemo.UI
     [SerializeField] private Text stationLabelText;
     [SerializeField] private Text statusText;
     [SerializeField] private ToastView toastView;
+    [SerializeField] private QuestDefinition[] questDefinitions;
 
     public Transform RecipeContainer => recipeContainer;
     public CraftingRecipeRowView RecipeRowPrefab => recipeRowPrefab;
@@ -36,6 +37,11 @@ namespace IdleGuildDemo.UI
       _recipes = recipes;
       _items = items;
       Refresh();
+    }
+
+    public void SetQuestDefinitions(QuestDefinition[] quests)
+    {
+      questDefinitions = quests;
     }
 
     public void Refresh()
@@ -99,8 +105,11 @@ namespace IdleGuildDemo.UI
 
       if (result.success)
       {
+        QuestUpdateResult questResult = ReportCraftedQuestProgress(result);
         string itemName = FormatItemName(result.outputItemId);
-        SetStatus($"Crafted {itemName} x{result.outputQuantity}.");
+        SetStatus(questResult != null && questResult.completed
+          ? $"Crafted {itemName} x{result.outputQuantity}. Quest complete."
+          : $"Crafted {itemName} x{result.outputQuantity}.");
         toastView?.ShowItemCrafted(itemName);
       }
       else
@@ -110,6 +119,26 @@ namespace IdleGuildDemo.UI
 
       CraftCompleted?.Invoke(result);
       return result;
+    }
+
+    private QuestUpdateResult ReportCraftedQuestProgress(CraftingResult result)
+    {
+      if (result == null || !result.success)
+      {
+        return null;
+      }
+
+      if (!TryGetServices(out ServiceRegistry services))
+      {
+        return null;
+      }
+
+      QuestUpdateResult questResult = services.QuestSystem.ReportItemCrafted(
+        result.outputItemId,
+        result.outputQuantity,
+        questDefinitions);
+      services.SaveSystem.Save(services.SaveData);
+      return questResult;
     }
 
     public void SetStationLabel(string label)
@@ -294,6 +323,13 @@ namespace IdleGuildDemo.UI
         default:
           return string.IsNullOrEmpty(itemId) ? "Item" : itemId;
       }
+    }
+
+    private static bool TryGetServices(out ServiceRegistry services)
+    {
+      GameBootstrap.EnsureInitialized();
+      services = ServiceRegistry.Instance;
+      return services.IsInitialized;
     }
   }
 }

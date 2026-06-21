@@ -413,7 +413,7 @@ Commit: Add manual QA checklist
 
 ## Task 47
 
-Status: READY
+Status: DONE
 Title: Bug fix pass
 Commit: Apply bug fix pass
 

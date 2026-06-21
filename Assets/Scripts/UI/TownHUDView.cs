@@ -264,6 +264,7 @@ namespace IdleGuildDemo.UI
             if (craftingPanel != null)
             {
                 craftingPanel.Bind(services.CraftingSystem, recipeDefinitions, itemDefinitions);
+                craftingPanel.SetQuestDefinitions(questDefinitions);
                 craftingPanel.Show();
                 SetStatus("Crafting opened.");
                 return;
@@ -290,6 +291,7 @@ namespace IdleGuildDemo.UI
             hudView?.RefreshQuest(services.QuestSystem, questDefinitions, services.PlayerProfile);
             inventoryPanel?.RefreshFromServices(services, itemDefinitions);
             craftingPanel?.Bind(services.CraftingSystem, recipeDefinitions, itemDefinitions);
+            craftingPanel?.SetQuestDefinitions(questDefinitions);
             characterPanel?.RefreshFromServices(services);
         }
 
