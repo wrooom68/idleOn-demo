@@ -20,9 +20,11 @@ Rules:
 - Update task status after each task.
 - Commit after each task using the listed commit message.
 - Stop if Unity validation, unclear scope, git conflict, or missing files are encountered.
-- Do not run Unity, Unity Hub, Unity batchmode, build commands, or licensing commands.
-- When a review gate is reached, create `reports/review_gate_<id>.md`, mark the gate `WAITING_FOR_USER_REVIEW`, commit, and stop.
-- Continue after a review gate only when the gate is marked `APPROVED` or `TASKS.md` contains `REVIEW DONE <gate_id>`.
+- Codex may run Unity validation only when the current task or review gate explicitly allows it. If Unity licensing, Hub, batchmode, or validation fails, stop and mark the current task or gate `BLOCKED`. Do not run final builds unless the task is specifically a build task.
+- When a review gate is reached, create `reports/review_gate_<id>.md`, mark the gate `WAITING_FOR_USER_REVIEW`, commit, print the required in-session review message, and stop.
+- Continue after a review gate only when the user replies `REVIEW DONE <gate_id>`.
+- If the user replies `REVIEW DONE <gate_id>`, mark the gate `APPROVED`, create or update `reports/review_gate_<gate_id>_approval.md`, commit with `Approve review gate <gate_id>`, and continue from the next `READY` task.
+- If the user replies `REVIEW BLOCKED <gate_id>: <short reason>`, mark the gate `BLOCKED`, create or update `reports/review_gate_<gate_id>_blocked.md`, record the reason, commit with `Block review gate <gate_id>`, and stop.
 
 ## Task 01
 
@@ -431,14 +433,22 @@ Status: WAITING_FOR_USER_REVIEW
 ID: A
 After tasks: 25, 26, 27, 28
 Approval phrase: REVIEW DONE A
-Review type: Code/system review. No visual Unity review required unless compile errors are suspected.
+Block phrase: REVIEW BLOCKED A: <short reason>
+Review type: Code/system review.
+Open Unity: Yes, recommended.
 
 Checklist:
 
-- Check reports for Tasks 25-28.
-- Open Unity manually only if needed.
-- Confirm no obvious script compile issues.
-- Confirm no gameplay scope creep.
+- Open Unity project manually.
+- Wait for Unity compile to finish.
+- Check Console for red compile errors.
+- Confirm there are no missing script errors.
+- Confirm QuestSystem-related scripts compile.
+- Confirm QuestTracker UI shell scripts compile.
+- Confirm ClassSystem scripts compile.
+- Confirm TalentSystem scripts compile.
+- Confirm no duplicate class names or namespace conflicts.
+- Confirm no scenes/assets were unexpectedly modified.
 - Confirm Codex can continue to UI/economy batch.
 
 ## Review Gate B

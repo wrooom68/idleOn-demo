@@ -4,6 +4,43 @@ Status: WAITING_FOR_USER_REVIEW
 
 Approval phrase: `REVIEW DONE A`
 
+Blocked phrase: `REVIEW BLOCKED A: <short reason>`
+
+## In-Session Message
+
+```text
+=== REVIEW GATE A ===
+
+Codex stopped because Tasks 25-28 changed quest, class, and talent systems.
+
+Review type:
+Code/system review
+
+Open Unity:
+Yes, recommended.
+
+Checklist:
+[ ] Open Unity project manually.
+[ ] Wait for Unity compile to finish.
+[ ] Check Console for red compile errors.
+[ ] Confirm there are no missing script errors.
+[ ] Confirm QuestSystem-related scripts compile.
+[ ] Confirm QuestTracker UI shell scripts compile.
+[ ] Confirm ClassSystem scripts compile.
+[ ] Confirm TalentSystem scripts compile.
+[ ] Confirm no duplicate class names or namespace conflicts.
+[ ] Confirm no scenes/assets were unexpectedly modified.
+[ ] Confirm Codex can continue to the next batch.
+
+If everything is good, reply exactly:
+REVIEW DONE A
+
+If there is a problem, reply:
+REVIEW BLOCKED A: <short reason>
+
+Codex must not continue until one of those replies is received.
+```
+
 ## Scope
 
 Review Gate A covers Batch A:
@@ -22,26 +59,21 @@ Review Gate A covers Batch A:
 
 ## Required Review
 
-This gate is intended as a code/system review. No Unity visual review is required unless compile errors are suspected.
+This gate is a code/system review. Unity is recommended so the user can manually confirm compile status and missing-script state.
 
-Check:
+## Resume Behavior
 
-- Reports for Tasks 25-28 are present and match the intended work.
-- Quest flow work stayed within the locked tutorial chain scope.
-- Quest tracker work is a UI shell only and does not modify scenes or prefabs.
-- Class selection supports Beginner to Warrior, Archer, and Mage only.
-- Talent work supports only Damage, Mining Speed, XP Gain, and AFK Gain.
-- No gameplay systems outside `scope.md` were added.
-- No scenes, prefabs, assets, Unity packages, builds, or licensing files were intentionally changed by Batch A.
-- Source-level changes look ready for the next UI/economy batch.
+If the user replies `REVIEW DONE A`, Codex must:
 
-## Optional Manual Unity Check
+- Mark Review Gate A `APPROVED` in `TASKS.md`.
+- Create or update `reports/review_gate_A_approval.md`.
+- Commit with `Approve review gate A`.
+- Continue autonomous batch-runner from the next `READY` task.
 
-Open Unity manually only if you suspect compile errors. Codex did not run Unity, Unity Hub, batchmode, builds, or licensing commands.
+If the user replies `REVIEW BLOCKED A: <short reason>`, Codex must:
 
-## Approval
-
-To let Codex continue to the next batch, update `TASKS.md` by either:
-
-- changing Review Gate A status to `APPROVED`, or
-- adding the phrase `REVIEW DONE A`.
+- Mark Review Gate A `BLOCKED` in `TASKS.md`.
+- Create or update `reports/review_gate_A_blocked.md`.
+- Record the reason.
+- Commit with `Block review gate A`.
+- Stop.

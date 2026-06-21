@@ -30,22 +30,57 @@ This repository uses `TASKS.md` as the source of truth for autonomous work. `sco
 
 - Batch visual/manual reviews together.
 - Do not ask for Unity visual review after every task.
-- When reaching a review gate, stop.
-- Create `reports/review_gate_<gate_id>.md`.
-- List exactly what the user must check in Unity or by source review.
-- Mark the gate `WAITING_FOR_USER_REVIEW`.
-- Do not continue until the user marks the gate `APPROVED` or updates `TASKS.md` with the approval phrase.
-- Approval phrase format: `REVIEW DONE <gate_id>`.
+- When reaching a review gate, create `reports/review_gate_<gate_id>.md`.
+- Update `TASKS.md` so the gate status is `WAITING_FOR_USER_REVIEW`.
+- Commit the review gate report and `TASKS.md` update.
+- Stop execution.
+- Print a clear in-session review message to the user.
+- Do not create external popup apps, standalone notification tools, Telegram messages, ntfy messages, OS notifications, or mobile webhooks.
+- The in-session review message must include the review gate ID, why Codex stopped, exactly what the user must review, whether Unity must be opened, which scenes/panels/scripts/features to check, what reply resumes execution, and what reply blocks execution.
+- Codex must not continue until the user replies with `REVIEW DONE <gate_id>` or `REVIEW BLOCKED <gate_id>: <short reason>`.
+
+## Required Review Gate Message
+
+At every review gate, output this exact format:
+
+```text
+=== REVIEW GATE <ID> ===
+
+Codex stopped because this batch needs user review.
+
+Review type:
+<Code review / Unity visual review / Gameplay review / Build review>
+
+Open Unity:
+<Yes/No>
+
+Checklist:
+[ ] item 1
+[ ] item 2
+[ ] item 3
+[ ] item 4
+
+If everything is good, reply exactly:
+REVIEW DONE <ID>
+
+If there is a problem, reply:
+REVIEW BLOCKED <ID>: <short reason>
+
+Codex must not continue until one of those replies is received.
+```
+
+## Review Gate Resume Rules
+
+- When the user replies `REVIEW DONE <gate_id>`, mark the review gate `APPROVED` in `TASKS.md`, create or update `reports/review_gate_<gate_id>_approval.md`, commit with `Approve review gate <gate_id>`, then continue autonomous batch-runner from the next `READY` task.
+- When the user replies `REVIEW BLOCKED <gate_id>: <short reason>`, mark the review gate `BLOCKED` in `TASKS.md`, create or update `reports/review_gate_<gate_id>_blocked.md`, record the reason, commit with `Block review gate <gate_id>`, and stop.
 
 ## Unity Safety
 
-- Never run Unity commands.
-- Never run Unity Hub.
-- Never run Unity batchmode.
-- Never run Unity builds.
-- Never run Unity licensing commands.
+- Codex may run Unity validation only when the current task or review gate explicitly allows it.
+- If Unity licensing, Hub, batchmode, or validation fails, stop and mark the current task or gate `BLOCKED`.
+- Do not run final builds unless the task is specifically a build task.
 - Do not install packages.
-- The user manually opens Unity for validation.
+- When a gate asks the user to open Unity, the user manually opens Unity for validation unless that gate explicitly allows Codex-run validation.
 - If a task requires Unity scene, prefab, or visual validation, mark it `REVIEW` or stop at a review gate.
 
 ## Scope Safety
