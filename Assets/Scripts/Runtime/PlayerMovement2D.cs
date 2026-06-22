@@ -11,6 +11,7 @@ namespace IdleGuildDemo.Runtime
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float jumpForce = 15f;
         [SerializeField] private CombatHUDView combatHUDView;
+        [SerializeField] private MiningHUDView miningHUDView;
 
         private Rigidbody2D rb;
         private Collider2D col;
@@ -34,6 +35,11 @@ namespace IdleGuildDemo.Runtime
             if (combatHUDView == null)
             {
                 combatHUDView = GameObject.FindFirstObjectByType<CombatHUDView>();
+            }
+
+            if (miningHUDView == null)
+            {
+                miningHUDView = GameObject.FindFirstObjectByType<MiningHUDView>();
             }
         }
 
@@ -79,6 +85,32 @@ namespace IdleGuildDemo.Runtime
                     if (sceneName == "MineZone")
                     {
                         activeAttackAnimation = "Pawn_Mine";
+
+                        if (miningHUDView == null)
+                        {
+                            miningHUDView = GameObject.FindFirstObjectByType<MiningHUDView>();
+                        }
+                        if (miningHUDView != null)
+                        {
+                            var nodes = GameObject.FindObjectsByType<MiningNodeController>(FindObjectsSortMode.None);
+                            MiningNodeController nearestNode = null;
+                            float nearestDistance = float.MaxValue;
+                            foreach (var n in nodes)
+                            {
+                                if (n.IsMined) continue;
+                                float dist = Vector2.Distance(transform.position, n.transform.position);
+                                if (dist < nearestDistance)
+                                {
+                                    nearestDistance = dist;
+                                    nearestNode = n;
+                                }
+                            }
+
+                            if (nearestNode != null && nearestDistance <= 2.2f)
+                            {
+                                nearestNode.OnMineByPlayer(miningHUDView);
+                            }
+                        }
                     }
                     else
                     {
