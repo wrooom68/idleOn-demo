@@ -105,6 +105,68 @@ namespace IdleGuildDemo.UI
             TickMining(manualTickSeconds);
         }
 
+        public void ShowMiningStrokeProgress(float normalizedProgress)
+        {
+            if (miningProgressFill != null)
+            {
+                miningProgressFill.fillAmount = Mathf.Clamp01(normalizedProgress);
+            }
+
+            SetText(progressText, $"{Mathf.Clamp01(normalizedProgress) * 100f:0}%");
+            SetStatus("Mining copper...");
+        }
+
+        public bool CollectDroppedCopperOre()
+        {
+            if (!TryGetServices(out ServiceRegistry services))
+            {
+                SetStatus("Runtime is not ready.");
+                return false;
+            }
+
+            CharacterState character = services.CharacterRosterSystem.GetActiveCharacter();
+            if (character == null)
+            {
+                SetStatus("No active character.");
+                return false;
+            }
+
+            bool added = services.InventorySystem.AddItem(
+                GameConstants.ItemCopperOreId,
+                GameConstants.MiningCopperOreRewardQuantity);
+
+            if (!added)
+            {
+                SetStatus("Could not collect copper ore.");
+                return false;
+            }
+
+            services.ProgressionSystem.AddXp(character, GameConstants.MiningCopperXpReward);
+            QuestUpdateResult questResult = services.QuestSystem.ReportItemCollected(
+                GameConstants.ItemCopperOreId,
+                GameConstants.MiningCopperOreRewardQuantity,
+                questDefinitions);
+
+            SetRewardText(new GatheringTickResult
+            {
+                completed = true,
+                itemGainedId = GameConstants.ItemCopperOreId,
+                itemGainedQuantity = GameConstants.MiningCopperOreRewardQuantity,
+                xpGained = GameConstants.MiningCopperXpReward
+            });
+
+            string message = "Copper ore collected.";
+            if (questResult != null && questResult.completed)
+            {
+                message += " Quest complete.";
+            }
+
+            SetStatus(message);
+            services.SaveSystem.Save(services.SaveData);
+            Refresh();
+            return true;
+        }
+
         public void TickMining(float deltaSeconds)
         {
             if (!TryGetServices(out ServiceRegistry services))

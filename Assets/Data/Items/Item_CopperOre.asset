@@ -15,5 +15,5 @@ MonoBehaviour:
   id: item.copper_ore
   displayName: Copper Ore
   description: Raw copper gathered from the mine.
-  icon: {fileID: -6760471406004971263, guid: 0baff3c6d20766f458f83e658fca6db5, type: 3}
+  icon: {fileID: 21300000, guid: 8ddae633b115610489bc9615fa6673a9, type: 3}
   isStackable: 1

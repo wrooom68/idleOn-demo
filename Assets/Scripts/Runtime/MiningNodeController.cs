@@ -8,6 +8,7 @@ namespace IdleGuildDemo.Runtime
     {
         [Header("Config")]
         [SerializeField] private int maxHits = 3;
+        [SerializeField] private Vector2 oreDropOffset = new Vector2(0.75f, -0.15f);
 
         private int currentHits;
         private SpriteRenderer spriteRenderer;
@@ -19,6 +20,7 @@ namespace IdleGuildDemo.Runtime
         // Health/Durability UI
         private UnityEngine.UI.Image fillImage;
         private GameObject healthBarCanvasGo;
+        private TextMesh statusText;
 
         public bool IsMined => isMined;
 
@@ -45,9 +47,8 @@ namespace IdleGuildDemo.Runtime
 
             currentHits--;
             UpdateHealthBar();
-
-            // Progress the actual game's gathering system!
-            miningHUDView.TickMiningOnce();
+            miningHUDView.ShowMiningStrokeProgress(1f - ((float)currentHits / maxHits));
+            SetNodeStatus(currentHits > 0 ? "Mining copper..." : "Copper ore ready");
 
             // Visual juice: scale pop & white flash
             StartCoroutine(HitJuiceRoutine());
@@ -86,6 +87,8 @@ namespace IdleGuildDemo.Runtime
 
         private IEnumerator CrumbleRoutine()
         {
+            SpawnCopperOrePickup();
+
             // Spawn some physical-like debris by scaling down rapidly with rotation
             float elapsed = 0f;
             float duration = 0.3f;
@@ -101,13 +104,26 @@ namespace IdleGuildDemo.Runtime
                 yield return null;
             }
 
-            var spawner = GameObject.FindFirstObjectByType<MiningNodeSpawner>();
-            if (spawner != null)
-            {
-                spawner.RemoveNode(this.gameObject);
-            }
-
             Destroy(this.gameObject);
+        }
+
+        private void SpawnCopperOrePickup()
+        {
+            GameObject oreDrop = new GameObject("CopperOre_Drop");
+            oreDrop.transform.position = transform.position + (Vector3)oreDropOffset;
+            oreDrop.transform.localScale = new Vector3(0.55f, 0.55f, 1f);
+
+            SpriteRenderer oreRenderer = oreDrop.AddComponent<SpriteRenderer>();
+            oreRenderer.sprite = spriteRenderer != null ? spriteRenderer.sprite : null;
+            oreRenderer.color = new Color(0.95f, 0.55f, 0.22f, 1f);
+            oreRenderer.sortingOrder = spriteRenderer != null ? spriteRenderer.sortingOrder + 1 : 1;
+
+            CircleCollider2D pickupCollider = oreDrop.AddComponent<CircleCollider2D>();
+            pickupCollider.isTrigger = true;
+            pickupCollider.radius = 0.45f;
+
+            CopperOrePickup pickup = oreDrop.AddComponent<CopperOrePickup>();
+            pickup.Initialize(GameObject.FindFirstObjectByType<MiningHUDView>());
         }
 
         private void CreateHealthBar()
@@ -142,6 +158,17 @@ namespace IdleGuildDemo.Runtime
             fillImage.fillMethod = UnityEngine.UI.Image.FillMethod.Horizontal;
             fillImage.fillOrigin = 0;
             fillImage.fillAmount = 1f;
+
+            GameObject statusGo = new GameObject("MiningStatus");
+            statusGo.transform.SetParent(this.transform);
+            statusGo.transform.localPosition = new Vector3(0, 1.05f, 0);
+            statusGo.transform.localScale = Vector3.one * 0.08f;
+            statusText = statusGo.AddComponent<TextMesh>();
+            statusText.anchor = TextAnchor.MiddleCenter;
+            statusText.alignment = TextAlignment.Center;
+            statusText.fontSize = 24;
+            statusText.color = Color.white;
+            statusText.text = "Copper Node";
         }
 
         private void UpdateHealthBar()
@@ -150,6 +177,14 @@ namespace IdleGuildDemo.Runtime
             {
                 float pct = (float)currentHits / maxHits;
                 fillImage.fillAmount = Mathf.Clamp01(pct);
+            }
+        }
+
+        private void SetNodeStatus(string message)
+        {
+            if (statusText != null)
+            {
+                statusText.text = message;
             }
         }
     }
