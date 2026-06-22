@@ -53,9 +53,13 @@ Do not import optional packs unless the primary packs are missing required visua
 
 ---
 
-## Approved Shortlist — Not Yet Imported
+## Approved Shortlist - Not Yet Imported
 
-These assets are approved candidates. Move an entry into the relevant category below once files are imported into Unity.
+All currently approved shortlisted packs that were copied into the Unity project are recorded in the imported sections below.
+
+---
+
+## Character Art
 
 ### FREE - Pixel Art Sidescroller Asset Pack 32x32 Overworld
 
@@ -64,48 +68,17 @@ Creator: GandalfHardcore
 Approved source: itch.io
 Source URL: https://gandalfhardcore.itch.io/free-pixel-art-sidescroller-asset-pack-32x32-overworld
 License: Custom permissive license on the itch.io page.
-License notes:
+Used for:
+- Character construction parts and placeholder character art.
+Files imported:
+- Assets/ThirdParty/GandalfHardcore_FreeSidescroller32/CharacterAssetPack/
+- Selected copied character sprites under Assets/Art/Characters/
+Notes:
 - Commercial and non-commercial video games/projects allowed.
 - Modification allowed.
 - Reselling, repackaging, or redistributing the assets is prohibited.
 - AI training, NFT, crypto/blockchain/web3 use is prohibited.
 - Use in game development tools or printed materials is prohibited.
-Use candidate for:
-- Player character placeholder
-- Town/combat/mine side-scroller environment
-- Forest/rock tiles
-- Backgrounds
-- Portal
-- Furnace/sawmill-style crafting props
-- Ores
-- HP bar
-Files to import:
-- GandalfHardcore FREE Platformer Assets.zip
-- GandalfHardcore FREE Character Asset Pack.zip
-- GandalfHardcore FREE Hp Bar.zip, only if needed
-Status: Shortlisted, not imported yet
-Notes: Strongest primary pack because it includes characters, tiles, props, ores, portal, HP bar, and backgrounds in one side-scroller style.
-```
-
-### Animated Slimes 16x16 px
-
-```text
-Creator: Stealthix
-Approved source: itch.io
-Source URL: https://stealthix.itch.io/animated-slimes
-License: Creative Commons Zero v1.0 Universal (CC0)
-License notes:
-- Free to use however desired under CC0.
-- Attribution appreciated but not required.
-- Asset license field on itch.io lists Creative Commons Zero v1.0 Universal.
-Use candidate for:
-- Slime enemy
-- Slime variants, if recolor is needed
-Files to import:
-- Slimes.zip
-- Slimes Orange.zip, only if needed
-Status: Shortlisted, not imported yet
-Notes: Best match for locked scope because the game needs exactly one Slime enemy.
 ```
 
 ### Pixel Adventure
@@ -115,120 +88,165 @@ Creator: Pixel Frog
 Approved source: itch.io
 Source URL: https://pixelfrog-assets.itch.io/pixel-adventure-1
 License: Creative Commons Zero v1.0 Universal (CC0)
-License notes:
-- Commercial use allowed.
-- Distribution, remixing, adaptation, and building upon the material are allowed.
-- Attribution is not required.
-Use candidate for:
-- Optional fallback character
-- Optional fallback tiles/items/placeholders
-- Optional simple platformer props
-Files to import:
-- Pixel Adventure 1.zip, only if needed
-Status: Shortlisted fallback, not imported yet
-Notes: Use only if GandalfHardcore pack does not cover a needed visual. Do not use paid Pixel Adventure 2 because the assignment requires free assets.
+Used for:
+- Optional fallback player/character sprites.
+Files imported:
+- Assets/Art/Characters/player/
+- Assets/Art/Characters/second/
+Notes:
+- Imported only as fallback character art where needed.
+- CC0 attribution is not required, but the source is recorded here for traceability.
 ```
 
-### Tiny Swords — Free Pack Only
+### Tiny Swords - Free Pack Only
 
 ```text
 Creator: Pixel Frog
 Approved source: itch.io
 Source URL: https://pixelfrog-assets.itch.io/tiny-swords
 License: Custom permissive license on the itch.io page.
-License notes:
+Used for:
+- Pawn and Warrior class/character sprite options.
+Files imported:
+- Assets/Art/Characters/new choices/
+Notes:
+- Free Pack assets only.
 - Personal and commercial projects allowed.
 - Modification allowed.
-- Crediting is not required but welcome.
 - Redistributing, reselling, or repackaging assets is prohibited, even if modified.
-Use candidate for:
-- Optional UI icons
-- Optional resource/class/weapon icons
-- Optional buttons/live bars if the main packs are insufficient
-Files to import:
-- Free Pack assets only
-Status: Shortlisted fallback, not imported yet
-Notes: Do not import the paid Enemy Pack. Use only if UI/item icons are missing from the primary packs.
-```
-
----
-
-## Character Art
-
-### Imported Asset Pack Name
-
-```text
-Creator:
-Approved source: itch.io / Unity Asset Store / GameDev Market
-Source URL:
-License:
-Used for:
-Files imported:
-Notes:
 ```
 
 ---
 
 ## Enemy Art
 
-### Imported Asset Pack Name
+### Animated Slimes 16x16 px
 
 ```text
-Creator:
-Approved source: itch.io / Unity Asset Store / GameDev Market
-Source URL:
-License:
+Creator: Stealthix
+Approved source: itch.io
+Source URL: https://stealthix.itch.io/animated-slimes
+License: Creative Commons Zero v1.0 Universal (CC0)
 Used for:
+- Slime enemy and color variants.
 Files imported:
+- Assets/ThirdParty/Stealthix_AnimatedSlimes/
+- Selected copied slime sprites under Assets/Art/Enemies/
 Notes:
+- CC0 allows use, modification, and distribution without attribution.
+- Attribution is appreciated by the creator, so the source is recorded here.
 ```
 
 ---
 
 ## Environment / Tileset Art
 
-### Imported Asset Pack Name
+### FREE - Pixel Art Sidescroller Asset Pack 32x32 Overworld
 
 ```text
-Creator:
-Approved source: itch.io / Unity Asset Store / GameDev Market
-Source URL:
-License:
+Creator: GandalfHardcore
+Approved source: itch.io
+Source URL: https://gandalfhardcore.itch.io/free-pixel-art-sidescroller-asset-pack-32x32-overworld
+License: Custom permissive license on the itch.io page.
 Used for:
+- Town, combat, mine, forest, rock, background, portal, crafting prop, chest, ore, and environment placeholder art.
 Files imported:
+- Assets/ThirdParty/GandalfHardcore_FreeSidescroller32/
+- Selected copied environment sprites under Assets/Art/Environment/
+- Selected copied item/environment sprites under Assets/Art/Items/
 Notes:
+- Primary environment pack for the project.
+- Raw ZIPs and extracted source files are kept locally under ExternalAssets/ and removed from Git tracking.
+```
+
+### Pixel Adventure
+
+```text
+Creator: Pixel Frog
+Approved source: itch.io
+Source URL: https://pixelfrog-assets.itch.io/pixel-adventure-1
+License: Creative Commons Zero v1.0 Universal (CC0)
+Used for:
+- Optional fallback props and portal-style art copied into project-organized folders.
+Files imported:
+- Assets/Art/Environment/Chest.png
+- Assets/Art/Environment/Town/portal/
+Notes:
+- Imported only where fallback visuals were needed.
 ```
 
 ---
 
 ## Item Icons
 
-### Imported Asset Pack Name
+### FREE - Pixel Art Sidescroller Asset Pack 32x32 Overworld
 
 ```text
-Creator:
-Approved source: itch.io / Unity Asset Store / GameDev Market
-Source URL:
-License:
+Creator: GandalfHardcore
+Approved source: itch.io
+Source URL: https://gandalfhardcore.itch.io/free-pixel-art-sidescroller-asset-pack-32x32-overworld
+License: Custom permissive license on the itch.io page.
 Used for:
+- Ore and resource item art.
 Files imported:
+- Assets/Art/Items/Ores.png
 Notes:
+- Imported as selected Unity-ready files, not raw archives.
+```
+
+### Tiny Swords - Free Pack Only
+
+```text
+Creator: Pixel Frog
+Approved source: itch.io
+Source URL: https://pixelfrog-assets.itch.io/tiny-swords
+License: Custom permissive license on the itch.io page.
+Used for:
+- Resource, tool, rock, tree, meat, gold, and inventory/resource icon art.
+Files imported:
+- Assets/Art/Items/Icons/
+- Assets/Art/Items/Resources/
+- Assets/Art/Items/Rocks/
+Notes:
+- Free Pack assets only.
+- Used as optional resource/icon fallback art.
 ```
 
 ---
 
 ## UI Art
 
-### Imported Asset Pack Name
+### FREE - Pixel Art Sidescroller Asset Pack 32x32 Overworld
 
 ```text
-Creator:
-Approved source: itch.io / Unity Asset Store / GameDev Market
-Source URL:
-License:
+Creator: GandalfHardcore
+Approved source: itch.io
+Source URL: https://gandalfhardcore.itch.io/free-pixel-art-sidescroller-asset-pack-32x32-overworld
+License: Custom permissive license on the itch.io page.
 Used for:
+- HP/progress bar art.
 Files imported:
+- Assets/Art/UI/BigBar_Base.png
 Notes:
+- Used for simple progress and HP bar visuals.
+```
+
+### Tiny Swords - Free Pack Only
+
+```text
+Creator: Pixel Frog
+Approved source: itch.io
+Source URL: https://pixelfrog-assets.itch.io/tiny-swords
+License: Custom permissive license on the itch.io page.
+Used for:
+- UI buttons, banners, carved panels, ribbons, pointers, and UI icon states.
+Files imported:
+- Assets/Art/UI/UI/
+Notes:
+- Free Pack assets only.
+- Personal and commercial projects allowed.
+- Modification allowed.
+- Redistributing, reselling, or repackaging assets is prohibited, even if modified.
 ```
 
 ---
@@ -237,17 +255,7 @@ Notes:
 
 Use Unity/TextMesh Pro default fonts unless a font is explicitly sourced from an approved source and documented here.
 
-### Font Name
-
-```text
-Creator:
-Approved source:
-Source URL:
-License:
-Used for:
-Files imported:
-Notes:
-```
+No third-party fonts are imported.
 
 ---
 

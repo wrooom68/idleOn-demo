@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be823f4e1763ffc4fae7c4af1470605b, type: 3}
   m_Name: Item_CopperSword
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: item.copper_sword
   displayName: Copper Sword
   description: Equipment-like item that will improve combat damage.
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 4fed1738196b2924787990c4c8d3b0c4, type: 3}
   isStackable: 1

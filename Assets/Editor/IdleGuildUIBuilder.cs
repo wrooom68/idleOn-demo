@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using System.IO;
-using IdleGuild.UI;
+using IdleGuildDemo.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
