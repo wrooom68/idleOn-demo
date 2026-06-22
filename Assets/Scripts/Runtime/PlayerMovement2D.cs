@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using IdleGuildDemo.UI;
 
 namespace IdleGuildDemo.Runtime
 {
@@ -9,6 +10,7 @@ namespace IdleGuildDemo.Runtime
     {
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float jumpForce = 15f;
+        [SerializeField] private CombatHUDView combatHUDView;
 
         private Rigidbody2D rb;
         private Collider2D col;
@@ -28,6 +30,11 @@ namespace IdleGuildDemo.Runtime
             col = GetComponent<Collider2D>();
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+
+            if (combatHUDView == null)
+            {
+                combatHUDView = GameObject.FindFirstObjectByType<CombatHUDView>();
+            }
         }
 
         private void Update()
@@ -76,6 +83,35 @@ namespace IdleGuildDemo.Runtime
                     else
                     {
                         activeAttackAnimation = "Pawn_Attack";
+
+                        if (sceneName == "CombatZone")
+                        {
+                            if (combatHUDView == null)
+                            {
+                                combatHUDView = GameObject.FindFirstObjectByType<CombatHUDView>();
+                            }
+                            if (combatHUDView != null)
+                            {
+                                var slimes = GameObject.FindObjectsByType<SlimeFightController>(FindObjectsSortMode.None);
+                                SlimeFightController nearestSlime = null;
+                                float nearestDistance = float.MaxValue;
+                                foreach (var s in slimes)
+                                {
+                                    if (s.IsDying) continue;
+                                    float dist = Vector2.Distance(transform.position, s.transform.position);
+                                    if (dist < nearestDistance)
+                                    {
+                                        nearestDistance = dist;
+                                        nearestSlime = s;
+                                    }
+                                }
+
+                                if (nearestSlime != null && nearestDistance <= 2.2f)
+                                {
+                                    nearestSlime.OnHitByPlayer(combatHUDView);
+                                }
+                            }
+                        }
                     }
                 }
             }

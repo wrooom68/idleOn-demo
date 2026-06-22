@@ -27,6 +27,60 @@ namespace IdleGuildDemo.UI
 
         private CombatEnemyState enemyState;
 
+        public EnemyDefinition SlimeDefinition => slimeDefinition;
+
+        public CombatTickResult AttackEnemyState(CombatEnemyState state)
+        {
+            if (!TryGetServices(out ServiceRegistry services))
+            {
+                SetStatus("Runtime is not ready.");
+                return null;
+            }
+
+            CharacterState character = services.CharacterRosterSystem.GetActiveCharacter();
+            if (character == null)
+            {
+                SetStatus("No active character.");
+                return null;
+            }
+
+            // Sync the main HUD's tracked enemyState so the big top HP bar reflects this slime
+            this.enemyState = state;
+
+            CombatTickResult result = services.CombatSystem.Attack(character, state, slimeDefinition);
+            if (result.enemyDefeated && result.coinsGained > 0)
+            {
+                services.PlayerProfile.coins += result.coinsGained;
+            }
+
+            QuestUpdateResult questResult = null;
+            if (result.enemyDefeated)
+            {
+                questResult = services.QuestSystem.ReportKill(GameConstants.EnemySlimeId, questDefinitions);
+            }
+
+            if (!string.IsNullOrEmpty(result.failureReason))
+            {
+                SetStatus(result.failureReason);
+            }
+            else
+            {
+                string message = result.enemyDefeated ? "Slime defeated." : $"Hit for {result.damageDealt}.";
+                if (questResult != null && questResult.completed)
+                {
+                    message += " Quest complete.";
+                }
+
+                SetStatus(message);
+            }
+
+            SetRewardText(result);
+            services.SaveSystem.Save(services.SaveData);
+            Refresh();
+
+            return result;
+        }
+
         private void OnEnable()
         {
             if (!Application.isPlaying) return;
