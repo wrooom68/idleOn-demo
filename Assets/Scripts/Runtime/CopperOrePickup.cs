@@ -6,10 +6,17 @@ namespace IdleGuildDemo.Runtime
     public sealed class CopperOrePickup : MonoBehaviour
     {
         private MiningHUDView miningHUDView;
+        private MiningNodeController sourceNode;
 
         public void Initialize(MiningHUDView hudView)
         {
             miningHUDView = hudView;
+        }
+
+        public void Initialize(MiningHUDView hudView, MiningNodeController node)
+        {
+            miningHUDView = hudView;
+            sourceNode = node;
         }
 
         private void Awake()
@@ -33,6 +40,14 @@ namespace IdleGuildDemo.Runtime
             }
         }
 
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.collider.GetComponent<PlayerMovement2D>() != null)
+            {
+                Collect();
+            }
+        }
+
         private void Collect()
         {
             if (miningHUDView == null)
@@ -42,6 +57,7 @@ namespace IdleGuildDemo.Runtime
 
             if (miningHUDView != null && miningHUDView.CollectDroppedCopperOre())
             {
+                sourceNode?.ResetAfterOreCollected();
                 Destroy(gameObject);
             }
         }
